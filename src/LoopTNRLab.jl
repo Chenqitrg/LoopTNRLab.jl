@@ -1,5 +1,6 @@
 module LoopTNRLab
 
+using ExecutionLab
 using PMPSLab
 using TensorKit
 using LinearAlgebra
@@ -9,11 +10,12 @@ import Random
 import ProgressLogging
 import TensorKit: scalartype
 import PMPSLab: PeriodicMPS, assertconsistency, standardize
-import PMPSLab: initialize_run, step!, isfinished, run_result, snapshot, restore_run
-import PMPSLab: DEFAULT_OBSERVER, default_observer, resolve_observer
-import PMPSLab: observer_running!, observer_paused!, observer_cancelled!
-import PMPSLab: observer_completed!, observer_failed!, observer_step!
-import PMPSLab: sweep_domain, completes_sweep, checkpoint_algorithm, checkpoint_metadata
+import ExecutionLab: initialize_run, step!, isfinished, run_result, snapshot, restore_run
+import ExecutionLab: DEFAULT_OBSERVER, default_observer, resolve_observer
+import ExecutionLab: observer_running!, observer_paused!, observer_cancelled!
+import ExecutionLab: observer_completed!, observer_failed!, observer_step!
+import PMPSLab: sweep_domain, completes_sweep
+import ExecutionLab: checkpoint_algorithm, checkpoint_metadata
 
 export AbstractTensorCell, UniformGates, CheckerboardGates, PlaquetteGates
 export mul_west, mul_south, mul_north, mul_east

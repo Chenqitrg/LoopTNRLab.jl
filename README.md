@@ -3,7 +3,8 @@
 Loop tensor-network renormalization built on [PMPSLab](../PMPSLab).
 LoopTNRLab owns square-lattice tensor cells, plaquette-to-MPS conversion,
 coarse graining, RG normalization, measurements, and the outer RG run.
-PMPSLab owns periodic-MPS optimization and shared local execution.
+PMPSLab owns periodic-MPS optimization; [ExecutionLab](../ExecutionLab) owns
+generic run control and checkpoint storage.
 
 ## Local setup
 
@@ -11,6 +12,7 @@ Keep the packages as siblings:
 
 ```text
 GitHub/
+├── ExecutionLab/
 ├── PMPSLab/
 └── LoopTNRLab/
 ```
@@ -22,13 +24,15 @@ julia --project=. -e 'using Pkg; Pkg.instantiate()'
 julia --project=.
 ```
 
-The project uses the relative local source `../PMPSLab` (version 0.1.0).
-Julia 1.12 or later is required. Load both packages: LoopTNRLab exports its RG
-and lattice APIs, while optimization and execution APIs come from PMPSLab.
+The project uses relative sources `../PMPSLab` and `../ExecutionLab`, both
+version 0.1.0. Julia 1.12 or later is required. LoopTNRLab exports its RG and
+lattice APIs, PMPSLab exports optimization APIs, and ExecutionLab exports run
+control. PMPSLab retains its old execution names as aliases.
 
 ```julia
 using LoopTNRLab
 using PMPSLab
+using ExecutionLab
 using TensorKit
 
 gate_space = ℂ^2 ⊗ ℂ^2 ← ℂ^2 ⊗ ℂ^2
@@ -127,7 +131,7 @@ session_ref[] = session
 start_run!(session)
 
 wait(session)  # stops after the current split site or complete RG action
-run_status(session) == PMPSLab.LOCAL_PAUSED || error("run did not pause")
+run_status(session) == ExecutionLab.LOCAL_PAUSED || error("run did not pause")
 display(run)   # reports the exact continuation point
 resume!(session)
 result = fetch(session)
@@ -161,7 +165,7 @@ input cell:
 session = start_run(initialize_run(gates, tnr))
 outcome = pause_and_checkpoint!(session, "paused-looptnr.jld2")
 
-if outcome == PMPSLab.LOCAL_CHECKPOINT_WRITTEN
+if outcome == ExecutionLab.LOCAL_CHECKPOINT_WRITTEN
     saved = read_checkpoint("paused-looptnr.jld2")
     restored = restore_run(saved, tnr)
     result = fetch(start_run(restored))
@@ -178,9 +182,10 @@ julia --project=. -e 'using Pkg; Pkg.test()'
 ```
 
 The suite covers cell geometry, normalization, nested optimization, observer
-progress, snapshots, and durable checkpoints. Both package versions are checked
-when reading a LoopTNR checkpoint. Schema 1 checkpoints written before the extraction require the original
-environment and are not migrated. Both package versions remain `0.1.0`.
+progress, snapshots, and durable checkpoints. ExecutionLab, PMPSLab, and
+LoopTNRLab versions are checked when reading a LoopTNR checkpoint. Legacy
+PMPSLab checkpoint formats require their original environment and are not
+migrated. PMPSLab and LoopTNRLab remain `0.1.0`; ExecutionLab starts at `0.1.0`.
 
 ## Scope and status
 

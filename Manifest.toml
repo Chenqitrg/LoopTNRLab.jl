@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "357d13c8fd399b477328b0426c6eb681e453c435"
+project_hash = "0bcb22c62e6e57a13b1854eb56f4d62b13fe1e4c"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "Dates", "InverseFunctions", "MacroTools"]
@@ -198,6 +198,12 @@ deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 version = "1.7.0"
 
+[[deps.ExecutionLab]]
+deps = ["JLD2"]
+path = "../ExecutionLab"
+uuid = "4dd3bba2-2046-4a6b-95c2-394d9ad1e82c"
+version = "0.1.0"
+
 [[deps.ExprTools]]
 git-tree-sha1 = "d2e49e7efd29719d6f28b891b0e0e159daa9d2b4"
 uuid = "e2ba6199-217a-4e67-a87a-7c52f15ade04"
@@ -364,7 +370,7 @@ uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "1.0.3"
 
 [[deps.LoopTNRLab]]
-deps = ["LinearAlgebra", "Logging", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "UUIDs"]
+deps = ["ExecutionLab", "LinearAlgebra", "Logging", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "UUIDs"]
 path = "."
 uuid = "79a27a1c-33d3-4c94-be41-5c25c0a0db11"
 version = "0.1.0"
@@ -461,7 +467,7 @@ uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 version = "2.0.1"
 
 [[deps.PMPSLab]]
-deps = ["HalfIntegers", "JLD2", "KrylovKit", "LinearAlgebra", "Logging", "MPSKit", "MatrixAlgebraKit", "ProgressLogging", "Random", "TensorKit", "UUIDs"]
+deps = ["ExecutionLab", "HalfIntegers", "KrylovKit", "LinearAlgebra", "Logging", "MPSKit", "MatrixAlgebraKit", "ProgressLogging", "Random", "TensorKit", "UUIDs"]
 path = "../PMPSLab"
 uuid = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
 version = "0.1.0"

@@ -6,3 +6,10 @@
     @test !isdefined(PMPSLab, :LoopTNR)
     @test !isdefined(PMPSLab, :MeasurementHistory)
 end
+
+@testset "shared execution interfaces" begin
+    @test parentmodule(AbstractAlgorithmRun) === ExecutionLab
+    @test LoopTNRLab.initialize_run === ExecutionLab.initialize_run
+    @test LoopTNRLab.snapshot === ExecutionLab.snapshot
+    @test PMPSLab.LocalRunSession === ExecutionLab.LocalRunSession
+end

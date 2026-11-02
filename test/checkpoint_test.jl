@@ -1,4 +1,5 @@
 using JLD2
+import ExecutionLab
 
 function checkpoint_loop_fixture()
     gate = ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1)
@@ -103,15 +104,17 @@ end
         path = joinpath(directory, "metadata.jld2")
         write_checkpoint(path, saved)
         jldopen(path, "r") do file
-            @test file["header/package_version"] == string(Base.pkgversion(PMPSLab))
-            @test file["header/metadata"] == Dict("LoopTNRLab" => string(Base.pkgversion(LoopTNRLab)))
+            @test file["header/package_version"] == string(Base.pkgversion(ExecutionLab))
+            @test file["header/metadata"] == Dict("LoopTNRLab" => string(Base.pkgversion(LoopTNRLab)), "PMPSLab" => string(Base.pkgversion(PMPSLab)))
         end
         for (key, value) in (
             ("header/metadata", Dict("LoopTNRLab" => "999.0.0")),
+            ("header/metadata", Dict("LoopTNRLab" => string(Base.pkgversion(LoopTNRLab)), "PMPSLab" => "999.0.0")),
+            ("header/metadata", Dict("LoopTNRLab" => "999.0.0", "PMPSLab" => string(Base.pkgversion(PMPSLab)))),
             ("header/metadata", Dict{String,String}()),
             ("header/algorithm", "split"),
             ("header/package_version", "999.0.0"),
-            ("header/schema_version", UInt8(1)),
+            ("header/schema_version", UInt8(2)),
         )
             write_checkpoint(path, saved)
             jldopen(path, "a+") do file
