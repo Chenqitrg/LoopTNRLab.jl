@@ -23,32 +23,32 @@ mutable struct PausingLoopTNRProgressObserver
     pause_site::Int
 end
 
-PMPSLab.observer_running!(
+ExecutionLab.observer_running!(
     observer::PausingLoopTNRProgressObserver, run::LoopTNRRun
-) = PMPSLab.observer_running!(observer.inner, run)
+) = ExecutionLab.observer_running!(observer.inner, run)
 
-PMPSLab.observer_paused!(
+ExecutionLab.observer_paused!(
     observer::PausingLoopTNRProgressObserver, run::LoopTNRRun
-) = PMPSLab.observer_paused!(observer.inner, run)
+) = ExecutionLab.observer_paused!(observer.inner, run)
 
-PMPSLab.observer_cancelled!(
+ExecutionLab.observer_cancelled!(
     observer::PausingLoopTNRProgressObserver, run::LoopTNRRun
-) = PMPSLab.observer_cancelled!(observer.inner, run)
+) = ExecutionLab.observer_cancelled!(observer.inner, run)
 
-PMPSLab.observer_completed!(
+ExecutionLab.observer_completed!(
     observer::PausingLoopTNRProgressObserver, run::LoopTNRRun
-) = PMPSLab.observer_completed!(observer.inner, run)
+) = ExecutionLab.observer_completed!(observer.inner, run)
 
-PMPSLab.observer_failed!(
+ExecutionLab.observer_failed!(
     observer::PausingLoopTNRProgressObserver, run::LoopTNRRun, exception
-) = PMPSLab.observer_failed!(observer.inner, run, exception)
+) = ExecutionLab.observer_failed!(observer.inner, run, exception)
 
-function PMPSLab.observer_step!(
+function ExecutionLab.observer_step!(
         observer::PausingLoopTNRProgressObserver,
         event::AlgorithmEvent,
         run::LoopTNRRun,
     )
-    PMPSLab.observer_step!(observer.inner, event, run)
+    ExecutionLab.observer_step!(observer.inner, event, run)
     if event isa LoopTNRSplitStepCompleted &&
             event.event.log.state.site == observer.pause_site
         pause!(observer.session[])
@@ -61,19 +61,19 @@ end
     run = initialize_run(cell, algorithm)
     custom = Returns(nothing)
 
-    @test PMPSLab.resolve_observer(
-        run, PMPSLab.DEFAULT_OBSERVER, false
+    @test ExecutionLab.resolve_observer(
+        run, ExecutionLab.DEFAULT_OBSERVER, false
     ) === nothing
-    @test PMPSLab.resolve_observer(
-        run, PMPSLab.DEFAULT_OBSERVER, true
+    @test ExecutionLab.resolve_observer(
+        run, ExecutionLab.DEFAULT_OBSERVER, true
     ) isa LoopTNRLab.LoopTNRProgressObserver
-    @test PMPSLab.resolve_observer(run, nothing, true) === nothing
-    @test PMPSLab.resolve_observer(run, custom, true) === custom
+    @test ExecutionLab.resolve_observer(run, nothing, true) === nothing
+    @test ExecutionLab.resolve_observer(run, custom, true) === custom
 end
 
 @testset "default LoopTNR observer — hierarchical progress" begin
     cell, algorithm = looptnr_progress_fixture()
-    observer = PMPSLab.default_observer(initialize_run(cell, algorithm))
+    observer = ExecutionLab.default_observer(initialize_run(cell, algorithm))
 
     result, records = captured_looptnr_logs() do
         renormalize(cell, algorithm; observer)
@@ -110,7 +110,7 @@ end
     run = initialize_run(cell, algorithm)
     session_ref = Ref{LocalRunSession}()
     observer = PausingLoopTNRProgressObserver(
-        PMPSLab.default_observer(run), session_ref, 4
+        ExecutionLab.default_observer(run), session_ref, 4
     )
     session = LocalRunSession(run; observer, threaded=false)
     session_ref[] = session
@@ -118,7 +118,7 @@ end
     _, records = captured_looptnr_logs() do
         start_run!(session)
         wait(session)
-        @test run_status(session) == PMPSLab.LOCAL_PAUSED
+        @test run_status(session) == ExecutionLab.LOCAL_PAUSED
         resume!(session)
         fetch(session)
     end
@@ -132,14 +132,14 @@ end
 @testset "default LoopTNR observer — terminal lifecycle" begin
     cell, algorithm = looptnr_progress_fixture()
     cancelled_run = initialize_run(cell, algorithm)
-    cancelled_observer = PMPSLab.default_observer(cancelled_run)
+    cancelled_observer = ExecutionLab.default_observer(cancelled_run)
 
     _, cancelled_records = captured_looptnr_logs() do
         session = LocalRunSession(
             cancelled_run; observer=cancelled_observer, threaded=false
         )
         cancel!(session)
-        @test run_status(session) == PMPSLab.LOCAL_CANCELLED
+        @test run_status(session) == ExecutionLab.LOCAL_CANCELLED
     end
     @test "LoopTNR cancelled · RG 0/1 normalization pending" in
         string.(getproperty.(cancelled_records, :message))
@@ -154,7 +154,7 @@ end
         measurement=failing_measurement,
     )
     failing_run = initialize_run(cell, failing_algorithm)
-    failing_observer = PMPSLab.default_observer(failing_run)
+    failing_observer = ExecutionLab.default_observer(failing_run)
 
     _, failed_records = captured_looptnr_logs() do
         session = LocalRunSession(
@@ -162,7 +162,7 @@ end
         )
         start_run!(session)
         wait(session)
-        @test run_status(session) == PMPSLab.LOCAL_FAILED
+        @test run_status(session) == ExecutionLab.LOCAL_FAILED
     end
     @test any(
         startswith("LoopTNR failed · RG 0/0 normalization pending · "),

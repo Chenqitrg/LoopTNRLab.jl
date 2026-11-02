@@ -169,7 +169,7 @@ end
 
     start_run!(session)
     wait(session)
-    @test run_status(session) == PMPSLab.LOCAL_PAUSED
+    @test run_status(session) == ExecutionLab.LOCAL_PAUSED
 
     saved = snapshot(session.run)
     @test saved isa LoopTNRSnapshot

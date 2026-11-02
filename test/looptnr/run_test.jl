@@ -103,7 +103,7 @@ end
     session = start_run(run; observer=nothing, threaded=false)
     result = fetch(session)
 
-    @test run_status(session) == PMPSLab.LOCAL_COMPLETED
+    @test run_status(session) == ExecutionLab.LOCAL_COMPLETED
     @test length(result.measurement_results) == 1
     @test length(result.log.rg_logs) == 1
 end
@@ -268,13 +268,13 @@ end
 
     start_run!(session)
     wait(session)
-    @test run_status(session) == PMPSLab.LOCAL_PAUSED
+    @test run_status(session) == ExecutionLab.LOCAL_PAUSED
     @test run.phase == LoopTNRLab.TNR_OPTIMIZE
     @test length(something(run.active_split).log.site_logs) == 4
 
     resume!(session)
     result = fetch(session)
-    @test run_status(session) == PMPSLab.LOCAL_COMPLETED
+    @test run_status(session) == ExecutionLab.LOCAL_COMPLETED
     @test length(events) == 10
     @test count(event -> event isa LoopTNRSplitStepCompleted, events) == 8
     @test getfield.(filter(event -> event isa LoopTNRCoarseGrained, events), :rg) ==

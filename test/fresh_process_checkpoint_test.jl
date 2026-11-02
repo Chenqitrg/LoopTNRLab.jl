@@ -1,4 +1,4 @@
-@testset "fresh-process checkpoints across all three packages" begin
+@testset "fresh-process split and LoopTNR checkpoints" begin
     mktempdir() do directory
         target = rand(PeriodicMPS, ComplexF64, 2, (2, 2), 1)
         split_algorithm = ALSSplit(;

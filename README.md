@@ -1,9 +1,9 @@
 # LoopTNRLab
 
-Loop tensor-network renormalization built on [PMPSLab](../PMPSLab).
+Loop tensor-network renormalization built on [MPSSplitLab](../MPSSplitLab) and [PMPSLab](../PMPSLab).
 LoopTNRLab owns square-lattice tensor cells, plaquette-to-MPS conversion,
 coarse graining, RG normalization, measurements, and the outer RG run.
-PMPSLab owns periodic-MPS optimization; [ExecutionLab](../ExecutionLab) owns
+PMPSLab owns periodic MPS data; MPSSplitLab owns splitting optimization; [ExecutionLab](../ExecutionLab) owns
 generic run control and checkpoint storage.
 
 ## Local setup
@@ -14,6 +14,11 @@ Keep the packages as siblings:
 GitHub/
 ├── ExecutionLab/
 ├── PMPSLab/
+├── MPSSplitLab/
+├── AlgorithmConfigLab/
+├── PeriodicProductsLab/
+├── TransferEnvironmentsLab/
+├── GaugeFixingLab/
 └── LoopTNRLab/
 ```
 
@@ -24,14 +29,14 @@ julia --project=. -e 'using Pkg; Pkg.instantiate()'
 julia --project=.
 ```
 
-The project uses relative sources `../PMPSLab` and `../ExecutionLab`, both
-version 0.1.0. Julia 1.12 or later is required. LoopTNRLab exports its RG and
-lattice APIs, PMPSLab exports optimization APIs, and ExecutionLab exports run
-control. PMPSLab retains its old execution names as aliases.
+Relative sources resolve the sibling packages. All local package versions remain
+`0.1.0`; Julia 1.12 or later is required. Import each API from its owning package.
 
 ```julia
 using LoopTNRLab
 using PMPSLab
+using MPSSplitLab
+using AlgorithmConfigLab: @setconfig
 using ExecutionLab
 using TensorKit
 
@@ -182,7 +187,7 @@ julia --project=. -e 'using Pkg; Pkg.test()'
 ```
 
 The suite covers cell geometry, normalization, nested optimization, observer
-progress, snapshots, and durable checkpoints. ExecutionLab, PMPSLab, and
+progress, snapshots, and durable checkpoints. ExecutionLab, PMPSLab, MPSSplitLab, and
 LoopTNRLab versions are checked when reading a LoopTNR checkpoint. Legacy
 PMPSLab checkpoint formats require their original environment and are not
 migrated. PMPSLab and LoopTNRLab remain `0.1.0`; ExecutionLab starts at `0.1.0`.
@@ -199,9 +204,13 @@ records deferred experiments.
 
 Extracted from PMPSLab commit `dbd1fb7` on 2026-11-02. Numerical kernels and
 space conventions were moved without changing the algorithm. The original
-history remains in the sibling PMPSLab repository.
+history remains in the sibling MPSSplitLab repository (formerly PMPSLab).
 
 LoopTNRLab builds on TensorKit, MPSKit through PMPSLab, and the algorithms and
 earlier implementation work in [TNRKit](https://github.com/QuantumKitHub/TNRKit.jl).
 TNRKit is not a runtime dependency. Credit belongs to the authors and
-contributors of those projects as described in PMPSLab's upstream acknowledgments.
+contributors of those projects as described in MPSSplitLab's upstream acknowledgments.
+
+Checkpoints written before the PMPSLab/MPSSplitLab rename require their original
+package environment; serialized module paths are not automatically migrated.
+Current LoopTNR snapshots record LoopTNRLab, MPSSplitLab, and PMPSLab versions.

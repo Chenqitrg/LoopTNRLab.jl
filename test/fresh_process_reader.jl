@@ -1,10 +1,11 @@
 # Executed in a new Julia process by fresh_process_checkpoint_test.jl.
-using Test, ExecutionLab, PMPSLab, LoopTNRLab, TensorKit, JLD2
+using Test, ExecutionLab, PMPSLab, MPSSplitLab, LoopTNRLab, TensorKit, JLD2
+using PeriodicProductsLab
 
 directory = only(ARGS)
 inputs = load(joinpath(directory, "inputs.jld2"))
 @testset "fresh-process restoration" begin
-    @test PMPSLab.step! === LoopTNRLab.step! === ExecutionLab.step!
+    @test MPSSplitLab.step! === LoopTNRLab.step! === ExecutionLab.step!
     saved_split = read_checkpoint(joinpath(directory, "split.jld2"))
     @test saved_split isa SplitSnapshot
     split_run = restore_run(saved_split, inputs["target"], inputs["split_algorithm"])

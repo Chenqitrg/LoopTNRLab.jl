@@ -2,6 +2,10 @@ module LoopTNRLab
 
 using ExecutionLab
 using PMPSLab
+using MPSSplitLab
+using AlgorithmConfigLab: AbstractAlgorithmConfig
+using GaugeFixingLab: ProjectorGaugeFix
+using TransferEnvironmentsLab: DenseTransferPolicy
 using TensorKit
 using LinearAlgebra
 using Logging: @error, @info, @logmsg
@@ -14,7 +18,7 @@ import ExecutionLab: initialize_run, step!, isfinished, run_result, snapshot, re
 import ExecutionLab: DEFAULT_OBSERVER, default_observer, resolve_observer
 import ExecutionLab: observer_running!, observer_paused!, observer_cancelled!
 import ExecutionLab: observer_completed!, observer_failed!, observer_step!
-import PMPSLab: sweep_domain, completes_sweep
+import MPSSplitLab: sweep_domain, completes_sweep
 import ExecutionLab: checkpoint_algorithm, checkpoint_metadata
 
 export AbstractTensorCell, UniformGates, CheckerboardGates, PlaquetteGates

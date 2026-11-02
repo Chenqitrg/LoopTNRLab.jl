@@ -1,8 +1,9 @@
-using Test, LoopTNRLab, PMPSLab, ExecutionLab
+using Test, LoopTNRLab, PMPSLab, MPSSplitLab, ExecutionLab, AlgorithmConfigLab
+using GaugeFixingLab, TransferEnvironmentsLab, PeriodicProductsLab
 using TensorKit
 
 @testset "cross-package method ambiguities" begin
-    @test isempty(detect_ambiguities(LoopTNRLab, PMPSLab, ExecutionLab; recursive=true))
+    @test isempty(detect_ambiguities(LoopTNRLab, PMPSLab, MPSSplitLab, ExecutionLab; recursive=true))
 end
 include("package_boundary_test.jl")
 include("setconfig_test.jl")

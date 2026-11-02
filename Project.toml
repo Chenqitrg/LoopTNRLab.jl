@@ -4,36 +4,51 @@ version = "0.1.0"
 authors = []
 
 [deps]
+PMPSLab = "671cd7e2-a4a1-40fd-ad7d-501014e12597"
+AlgorithmConfigLab = "b0e90283-4d54-4d8d-bc0c-6244e78caa43"
+GaugeFixingLab = "aa667719-725a-491d-a593-e8aee8158101"
+TransferEnvironmentsLab = "00da41fc-476d-4222-bd5b-a569ec08fa45"
 ExecutionLab = "4dd3bba2-2046-4a6b-95c2-394d9ad1e82c"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
-PMPSLab = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
+MPSSplitLab = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
 ProgressLogging = "33c8b6b6-d38a-422a-b730-caa89a2f386c"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 TensorKit = "07d1fe3e-3e46-537d-9eac-e9e13d0d4cec"
 UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [sources]
-ExecutionLab = {path = "../ExecutionLab"}
 PMPSLab = {path = "../PMPSLab"}
+AlgorithmConfigLab = {path = "../AlgorithmConfigLab"}
+GaugeFixingLab = {path = "../GaugeFixingLab"}
+TransferEnvironmentsLab = {path = "../TransferEnvironmentsLab"}
+PeriodicProductsLab = {path = "../PeriodicProductsLab"}
+ExecutionLab = {path = "../ExecutionLab"}
+MPSSplitLab = {path = "../MPSSplitLab"}
 
 [compat]
+PMPSLab = "0.1"
+AlgorithmConfigLab = "0.1"
+GaugeFixingLab = "0.1"
+TransferEnvironmentsLab = "0.1"
+PeriodicProductsLab = "0.1"
 ExecutionLab = "0.1"
 julia = "1.12"
 CategoryData = "0.4"
 JLD2 = "0.6"
 LinearAlgebra = "1.12"
 Logging = "1.11"
-PMPSLab = "0.1"
+MPSSplitLab = "0.1"
 ProgressLogging = "0.1"
 Random = "1.11"
 TensorKit = "0.17.1"
 UUIDs = "1.11"
 
 [extras]
+PeriodicProductsLab = "9b7f73d1-02d3-4223-9533-f823f86a6b11"
 CategoryData = "8fccf25a-f50e-468c-8fba-3cb130506274"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["CategoryData", "JLD2", "Test"]
+test = ["CategoryData", "JLD2", "PeriodicProductsLab", "Test"]

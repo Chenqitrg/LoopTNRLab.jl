@@ -1,10 +1,10 @@
 # LoopTNR 分阶段实现计划
 
 > Package extraction (2026-11-02): this design now belongs to LoopTNRLab.
-> Periodic-MPS optimization and generic execution remain in the sibling PMPSLab.
+> Periodic-MPS optimization belongs to MPSSplitLab; generic execution belongs to ExecutionLab.
 > Historical implementation details below describe the pre-extraction baseline.
-> Current integration uses PMPSLab public observer/checkpoint hooks; see
-> [execution extensions](../../PMPSLab/docs/execution-extensions.md). Split runs
+> Current integration uses ExecutionLab public observer/checkpoint hooks; see
+> [execution extensions](../../MPSSplitLab/docs/execution-extensions.md). Split runs
 > and snapshots no longer contain measurement histories; only the outer LoopTNR
 > run owns scientific results. Cell-to-MPS conversion now lives in `src/periodic_mps.jl`.
 

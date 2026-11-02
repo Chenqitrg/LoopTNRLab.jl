@@ -77,8 +77,8 @@ end
         start_run!(session)
         take!(reached_site_four)
         @test pause_and_checkpoint!(session, path) ==
-              PMPSLab.LOCAL_CHECKPOINT_WRITTEN
-        @test run_status(session) == PMPSLab.LOCAL_PAUSED
+              ExecutionLab.LOCAL_CHECKPOINT_WRITTEN
+        @test run_status(session) == ExecutionLab.LOCAL_PAUSED
 
         loaded = read_checkpoint(path)
         @test loaded isa LoopTNRSnapshot
@@ -105,12 +105,13 @@ end
         write_checkpoint(path, saved)
         jldopen(path, "r") do file
             @test file["header/package_version"] == string(Base.pkgversion(ExecutionLab))
-            @test file["header/metadata"] == Dict("LoopTNRLab" => string(Base.pkgversion(LoopTNRLab)), "PMPSLab" => string(Base.pkgversion(PMPSLab)))
+            @test file["header/metadata"] == Dict("LoopTNRLab" => string(Base.pkgversion(LoopTNRLab)), "PMPSLab" => string(Base.pkgversion(PMPSLab)), "MPSSplitLab" => string(Base.pkgversion(MPSSplitLab)))
         end
         for (key, value) in (
             ("header/metadata", Dict("LoopTNRLab" => "999.0.0")),
-            ("header/metadata", Dict("LoopTNRLab" => string(Base.pkgversion(LoopTNRLab)), "PMPSLab" => "999.0.0")),
-            ("header/metadata", Dict("LoopTNRLab" => "999.0.0", "PMPSLab" => string(Base.pkgversion(PMPSLab)))),
+            ("header/metadata", merge(ExecutionLab.checkpoint_metadata(saved), Dict("PMPSLab" => "999.0.0"))),
+            ("header/metadata", merge(ExecutionLab.checkpoint_metadata(saved), Dict("MPSSplitLab" => "999.0.0"))),
+            ("header/metadata", Dict("LoopTNRLab" => "999.0.0", "PMPSLab" => string(Base.pkgversion(PMPSLab)), "MPSSplitLab" => string(Base.pkgversion(MPSSplitLab)))),
             ("header/metadata", Dict{String,String}()),
             ("header/algorithm", "split"),
             ("header/package_version", "999.0.0"),
