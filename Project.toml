@@ -1,0 +1,36 @@
+name = "LoopTNRLab"
+uuid = "79a27a1c-33d3-4c94-be41-5c25c0a0db11"
+version = "0.1.0"
+authors = []
+
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+PMPSLab = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
+ProgressLogging = "33c8b6b6-d38a-422a-b730-caa89a2f386c"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+TensorKit = "07d1fe3e-3e46-537d-9eac-e9e13d0d4cec"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[sources]
+PMPSLab = {path = "../PMPSLab"}
+
+[compat]
+julia = "1.12"
+CategoryData = "0.4"
+JLD2 = "0.6"
+LinearAlgebra = "1.12"
+Logging = "1.11"
+PMPSLab = "0.1"
+ProgressLogging = "0.1"
+Random = "1.11"
+TensorKit = "0.17.1"
+UUIDs = "1.11"
+
+[extras]
+CategoryData = "8fccf25a-f50e-468c-8fba-3cb130506274"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["CategoryData", "JLD2", "Test"]
