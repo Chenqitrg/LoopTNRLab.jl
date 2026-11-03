@@ -398,7 +398,7 @@ weakdeps = ["Adapt"]
     MPSKitAdaptExt = "Adapt"
 
 [[deps.MPSSplitLab]]
-deps = ["AlgorithmConfigLab", "ExecutionLab", "GaugeFixingLab", "KrylovKit", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TransferEnvironmentsLab", "UUIDs"]
+deps = ["AlgorithmConfigLab", "ExecutionLab", "GaugeFixingLab", "KrylovKit", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TransferEnvironmentsLab", "TransferMatricesLab", "UUIDs"]
 path = "../MPSSplitLab"
 uuid = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
 version = "0.1.0"
@@ -740,10 +740,20 @@ version = "0.5.29"
     FlameGraphs = "08572546-2f56-4bcf-ba4e-bab62c3a3f89"
 
 [[deps.TransferEnvironmentsLab]]
-deps = ["AlgorithmConfigLab", "LinearAlgebra", "MPSKit", "MatrixAlgebraKit", "PMPSLab", "PeriodicProductsLab", "TensorKit"]
+deps = ["AlgorithmConfigLab", "LinearAlgebra", "MPSKit", "PMPSLab", "PeriodicProductsLab", "TensorKit", "TransferMatricesLab"]
 path = "../TransferEnvironmentsLab"
 uuid = "00da41fc-476d-4222-bd5b-a569ec08fa45"
 version = "0.1.0"
+
+[[deps.TransferMatricesLab]]
+deps = ["LinearAlgebra", "MPSKit", "MatrixAlgebraKit", "TensorKit"]
+path = "../TransferMatricesLab"
+uuid = "32740eca-525e-449a-9a92-5b9caafb409d"
+version = "0.1.0"
+weakdeps = ["PMPSLab"]
+
+    [deps.TransferMatricesLab.extensions]
+    TransferMatricesPMPSLabExt = "PMPSLab"
 
 [[deps.TupleTools]]
 git-tree-sha1 = "41e43b9dc950775eac654b9f845c839cd2f1821e"
