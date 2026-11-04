@@ -215,3 +215,11 @@ contributors of those projects as described in MPSSplitLab's upstream acknowledg
 Checkpoints written before the PMPSLab/MPSSplitLab rename require their original
 package environment; serialized module paths are not automatically migrated.
 Current LoopTNR snapshots record LoopTNRLab, MPSSplitLab, and PMPSLab versions.
+
+## Tree-shaped configuration construction
+
+See [the standalone configuration example](examples/01_configuration_tree.jl).
+It constructs existing configuration types from graphical or indented trees;
+it does not define new types or run numerical work. The owning package supplies
+package-owned default metadata and serialization support for supported
+configuration interchange. JSON file I/O is optional through AlgorithmConfigLab.

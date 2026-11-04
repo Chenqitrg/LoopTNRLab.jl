@@ -47,5 +47,6 @@ include("looptnr/snapshot.jl")
 include("looptnr/show.jl")
 include("looptnr/progress.jl")
 include("checkpoint.jl")
+include("configuration.jl")
 
 end

@@ -43,10 +43,17 @@ version = "4.7.0"
     StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [[deps.AlgorithmConfigLab]]
-deps = ["MPSKit", "MatrixAlgebraKit"]
 path = "../AlgorithmConfigLab"
 uuid = "b0e90283-4d54-4d8d-bc0c-6244e78caa43"
 version = "0.1.0"
+
+    [deps.AlgorithmConfigLab.extensions]
+    AlgorithmConfigLabJSONExt = "JSON"
+    AlgorithmConfigLabMatrixAlgebraKitExt = "MatrixAlgebraKit"
+
+    [deps.AlgorithmConfigLab.weakdeps]
+    JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+    MatrixAlgebraKit = "6c742aac-3347-4629-af66-fc926824e5e4"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"

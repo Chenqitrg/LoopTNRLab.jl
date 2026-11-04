@@ -13,3 +13,5 @@ include("tensorcell_test.jl")
 include("looptnr/runtests.jl")
 include("checkpoint_test.jl")
 include("fresh_process_checkpoint_test.jl")
+
+include("configuration_test.jl")
