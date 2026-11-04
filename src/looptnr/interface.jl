@@ -20,11 +20,6 @@ Configuration for Loop tensor-network renormalization.
         rg_count >= 0 || throw(ArgumentError(
             "max_rg_steps must be non-negative, got $max_rg_steps"
         ))
-        domain = sweep_domain(split.sweep)
-        domain == Base.OneTo(8) || throw(DimensionMismatch(
-            "LoopTNR split sweep domain $domain does not match the required " *
-            "eight-site domain $(Base.OneTo(8))"
-        ))
         return new{S,M}(split, rg_count, measurement)
     end
 end
@@ -43,8 +38,8 @@ function default_looptnr(; max_rg_steps::Integer, dcut::Integer)
     preliminary_rank = Base.checked_mul(2, Int(dcut))
     numerical_truncation = truncerror(; rtol=1.0e-13)
     split = ALSSplit(;
-        ansatz=PeriodicGaugeAnsatz(;
-            initial_split=SVDAnsatz(;
+        initialization=GaugeInitialization(;
+            initialization=SVDInitialization(;
                 trunc=truncrank(preliminary_rank) & numerical_truncation,
             ),
             gauge_fix=ProjectorGaugeFix(;
@@ -53,7 +48,7 @@ function default_looptnr(; max_rg_steps::Integer, dcut::Integer)
                 trunc=truncrank(dcut) & numerical_truncation,
             ),
         ),
-        sweep=CircularSweep(; site_count=8, max_sweeps=40),
+        sweep=CircularSweep(; max_sweeps=40),
         solver=LDLTSolve(),
         environments=SplitEnvironmentPolicy(;
             normal=DenseTransferPolicy(),

@@ -184,8 +184,8 @@ end
     gate = ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1)
     cell = UniformGates(gate)
     split_algorithm = ALSSplit(;
-        ansatz=SVDAnsatz(),
-        sweep=CircularSweep(; site_count=8, max_sweeps=1),
+        initialization=SVDInitialization(),
+        sweep=CircularSweep(; max_sweeps=1),
         solver=CholeskySolve(),
     )
     run = initialize_run(cell, LoopTNR(; split=split_algorithm, max_rg_steps=1))
@@ -245,8 +245,8 @@ end
 @testset "LoopTNR multi-RG — local pause inside active split" begin
     gate = ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1)
     split_algorithm = ALSSplit(;
-        ansatz=SVDAnsatz(),
-        sweep=CircularSweep(; site_count=8, max_sweeps=1),
+        initialization=SVDInitialization(),
+        sweep=CircularSweep(; max_sweeps=1),
         solver=CholeskySolve(),
     )
     run = initialize_run(

@@ -1,4 +1,5 @@
 using Test, LoopTNRLab, PMPSLab, MPSSplitLab, ExecutionLab, AlgorithmConfigLab
+using MPSSplitLab: SplitRun, SplitSnapshot, SplitLog, SiteLog
 using ExecutionLab: AbstractAlgorithmRun, AlgorithmEvent, LocalRunSession, start_run!
 using ExecutionLab: initialize_run, step!, isfinished, run_result, snapshot, write_checkpoint
 using GaugeFixingLab, TransferEnvironmentsLab, PeriodicProductsLab

@@ -4,8 +4,8 @@ import ProgressLogging
 function looptnr_progress_fixture(; max_rg_steps::Int=1)
     gate = ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1)
     split_algorithm = ALSSplit(;
-        ansatz=SVDAnsatz(),
-        sweep=CircularSweep(; site_count=8, max_sweeps=1),
+        initialization=SVDInitialization(),
+        sweep=CircularSweep(; max_sweeps=1),
         solver=CholeskySolve(),
     )
     return UniformGates(gate), LoopTNR(; split=split_algorithm, max_rg_steps)

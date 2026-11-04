@@ -1,7 +1,7 @@
-function rg0_split(; sites::Int=8)
+function rg0_split()
     return ALSSplit(;
-        ansatz=SVDAnsatz(),
-        sweep=CircularSweep(; site_count=sites, max_sweeps=0),
+        initialization=SVDInitialization(),
+        sweep=CircularSweep(; max_sweeps=0),
         solver=CholeskySolve(),
     )
 end
@@ -18,12 +18,9 @@ end
     @test algorithm.measurement === measurement
     @test algorithm == deepcopy(algorithm)
     @test hash(algorithm) == hash(deepcopy(algorithm))
-    @test algorithm.split.ansatz isa SVDAnsatz
+    @test algorithm.split.initialization isa SVDInitialization
 
     @test_throws ArgumentError LoopTNR(; split=custom_split, max_rg_steps=-1)
-    @test_throws DimensionMismatch LoopTNR(;
-        split=rg0_split(; sites=7), max_rg_steps=0
-    )
 end
 
 @testset "LoopTNR default split configuration" begin
@@ -35,12 +32,12 @@ end
         TensorKit.truncrank(dcut) & numerical_truncation
 
     @test algorithm.max_rg_steps == 3
-    @test algorithm.split.ansatz isa PeriodicGaugeAnsatz
-    @test algorithm.split.ansatz.initial_split.trunc == expected_svd
-    @test algorithm.split.ansatz.gauge_fix.tol == 1.0e-13
-    @test algorithm.split.ansatz.gauge_fix.maxiter == 100
-    @test algorithm.split.ansatz.gauge_fix.trunc == expected_projector
-    @test algorithm.split.sweep == CircularSweep(; site_count=8, max_sweeps=40)
+    @test algorithm.split.initialization isa GaugeInitialization
+    @test algorithm.split.initialization.initialization.trunc == expected_svd
+    @test algorithm.split.initialization.gauge_fix.tol == 1.0e-13
+    @test algorithm.split.initialization.gauge_fix.maxiter == 100
+    @test algorithm.split.initialization.gauge_fix.trunc == expected_projector
+    @test algorithm.split.sweep == CircularSweep(; max_sweeps=40)
     @test algorithm.split.solver == LDLTSolve()
     @test algorithm.split.environments.normal isa DenseTransferPolicy
     @test algorithm.split.environments.mixed isa DenseTransferPolicy

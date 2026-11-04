@@ -8,5 +8,5 @@ using TensorKit: MatrixAlgebraKit
         @test isequal(include_string(@__MODULE__, "@config " * repr(configtree(original; mode))), original)
         @test isequal(construct_config(configspec(original; registry, mode); registry), original)
     end
-    @test occursin("site_count: 8", configtree(original; mode=:compact))
+    @test !occursin("site_count", configtree(original; mode=:compact))
 end

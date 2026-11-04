@@ -2,8 +2,8 @@
     mktempdir() do directory
         target = rand(PeriodicMPS, ComplexF64, 2, (2, 2), 1)
         split_algorithm = ALSSplit(;
-            ansatz=SVDAnsatz(),
-            sweep=CircularSweep(; site_count=4, max_sweeps=1),
+            initialization=SVDInitialization(),
+            sweep=CircularSweep(; max_sweeps=1),
             solver=CholeskySolve(),
         )
         split_run = initialize_run(target, split_algorithm)

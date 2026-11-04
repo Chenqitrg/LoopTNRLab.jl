@@ -12,12 +12,12 @@
     @test modified.split.stopping.rtol == algorithm.split.stopping.rtol
     @test modified.measurement === algorithm.measurement
 
-    replacement_trunc = algorithm.split.ansatz.gauge_fix.trunc
+    replacement_trunc = algorithm.split.initialization.gauge_fix.trunc
     retruncated = @setconfig(
         algorithm,
-        split/ansatz/initial_split/trunc = replacement_trunc,
+        split/initialization/initialization/trunc = replacement_trunc,
     )
-    @test retruncated.split.ansatz.initial_split.trunc == replacement_trunc
+    @test retruncated.split.initialization.initialization.trunc == replacement_trunc
 
     @test algorithm.max_rg_steps == 3
     @test algorithm.split.sweep.max_sweeps == 40
@@ -30,7 +30,7 @@ end
 
     @test modified.split.stopping isa NoStopping
     @test typeof(modified.split) !== typeof(algorithm.split)
-    @test modified.split.ansatz === algorithm.split.ansatz
+    @test modified.split.initialization === algorithm.split.initialization
 end
 
 @testset "@setconfig — paths and constructors are validated" begin

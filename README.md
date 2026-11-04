@@ -66,7 +66,7 @@ result = renormalize(gates, tnr)
 
 The default uses an eight-site circular ALS split with at most 40 sweeps,
 dense normal and mixed environments, an LDLT local solve, and a periodic-gauge
-ansatz. Its preliminary SVD retains at most `2dcut` states before projector
+initialization. Its preliminary SVD retains at most `2dcut` states before projector
  gauge fixing reduces the universal bond dimension to `dcut`. After five
 complete sweeps it stops when both `abs(cost) < 1e-9` and the relative
 sweep-to-sweep cost change is below `1e-2`. Every RG boundary is normalized by

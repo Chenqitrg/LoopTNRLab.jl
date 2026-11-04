@@ -1,3 +1,5 @@
+_split_approximation(run::SplitRun) = run.context.approximation
+_split_approximation(saved::SplitSnapshot) = saved.approximation
 _split_pending_iteration(run::SplitRun) = run.pending_iteration
 _split_pending_iteration(saved::SplitSnapshot) = saved.pending_iteration
 
@@ -19,7 +21,7 @@ function _looptnr_position(
         pending === nothing &&
             return "RG $(completed_rg + 1)/$max_rg_steps coarse graining pending"
         state = first(pending)
-        site_count = length(sweep_domain(algorithm.split.sweep))
+        site_count = length(_split_approximation(active_split))
         return "RG $(completed_rg + 1)/$max_rg_steps · " *
             "split sweep $(state.completed_sweeps + 1) · next site $(state.site)/$site_count"
     elseif phase == TNR_COARSE_GRAIN
@@ -78,7 +80,7 @@ function Base.show(io::IO, ::MIME"text/plain", run::LoopTNRRun)
         print(
             io,
             "\n  active split: ", length(active_split.log.site_logs),
-            "/", length(active_split.algorithm.sweep), " site updates",
+            "/", length(active_split.sweep), " site updates",
         )
     end
     return nothing
@@ -134,7 +136,7 @@ function Base.show(io::IO, ::MIME"text/plain", saved::LoopTNRSnapshot)
             io,
             "\n  active split snapshot: ",
             length(saved.active_split.log.site_logs), "/",
-            length(saved.identity.algorithm.split.sweep), " site updates",
+            length(sweep_states(saved.identity.algorithm.split.sweep, length(saved.active_split.approximation))), " site updates",
         )
     end
     return nothing

@@ -4,8 +4,8 @@ import ExecutionLab
 function checkpoint_loop_fixture()
     gate = ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1)
     split_algorithm = ALSSplit(;
-        ansatz=SVDAnsatz(),
-        sweep=CircularSweep(; site_count=8, max_sweeps=1),
+        initialization=SVDInitialization(),
+        sweep=CircularSweep(; max_sweeps=1),
         solver=CholeskySolve(),
     )
     algorithm = LoopTNR(; split=split_algorithm, max_rg_steps=1)

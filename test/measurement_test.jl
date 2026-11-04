@@ -52,7 +52,7 @@ end
 @testset "measurement results stay separate from control logs" begin
     log = SiteLog(:state, 0.25, 0.5)
 
-    @test fieldnames(typeof(log)) == (:state, :cost, :duration)
+    @test fieldnames(typeof(log)) == (:state, :local_cost, :duration)
     @test_throws MethodError SiteLog(
         :state, 0.25, 0.5, TestMeasurementResult(:site, [1])
     )

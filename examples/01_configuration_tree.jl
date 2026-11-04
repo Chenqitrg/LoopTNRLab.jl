@@ -7,10 +7,9 @@ config = @config """
 LoopTNRLab.LoopTNR
 ├─ max_rg_steps: 2
 └─ split: MPSSplitLab.ALSSplit
-   ├─ ansatz: MPSSplitLab.SVDAnsatz()
+   ├─ initialization: MPSSplitLab.SVDInitialization()
    ├─ solver: MPSSplitLab.CholeskySolve()
    └─ sweep: MPSSplitLab.CircularSweep
-      ├─ site_count: 8
       └─ max_sweeps: 4
 """
 display(config)

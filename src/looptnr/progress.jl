@@ -60,22 +60,26 @@ function observer_step!(
     end
 
     observer.sweep_duration += site_event.log.duration
-    site_count = length(sweep_domain(run.algorithm.split.sweep))
+    active_split = something(run.active_split)
+    site_count = length(active_split.context.approximation)
     progress_name = "LoopTNR RG $(event.rg)/$(run.algorithm.max_rg_steps) · " *
         "split sweep $sweep · site $(state.site)/$site_count · " *
-        "cost $(_progress_number(site_event.log.cost))"
-    active_split = something(run.active_split)
+        "cost $(_progress_number(site_event.log.local_cost))"
     completed_updates = length(active_split.log.site_logs)
-    maximal_updates = length(active_split.algorithm.sweep)
+    maximal_updates = length(active_split.sweep)
     fraction = maximal_updates == 0 ? nothing :
         min(completed_updates / maximal_updates, 1.0)
     _emit_progress!(observer, progress_name; fraction)
 
     if completes_sweep(state, active_split.pending_iteration)
+        record = last(active_split.log.sweep_logs)
         summary = "LoopTNR RG $(event.rg)/$(run.algorithm.max_rg_steps) · " *
             "split sweep $sweep completed · " *
-            "cost $(_progress_number(site_event.log.cost)) · " *
-            "duration $(_progress_number(observer.sweep_duration)) s"
+            "cost $(_progress_number(site_event.log.local_cost)) · " *
+            "duration $(_progress_number(record.duration)) s"
+        if !isnothing(record.exact_error)
+            summary *= " · exact error $(_progress_number(record.exact_error))"
+        end
         @info summary
         isfinished(active_split) && _close_progress!(observer, progress_name)
         observer.sweep = nothing
@@ -92,7 +96,7 @@ function _rg_summary(event::LoopTNRCoarseGrained, run::LoopTNRRun)
     split_log = event.log.split_log
     parts = String[prefix * " completed"]
     if !isempty(split_log.site_logs)
-        push!(parts, "cost $(_progress_number(last(split_log.site_logs).cost))")
+        push!(parts, "cost $(_progress_number(last(split_log.site_logs).local_cost))")
     end
     push!(parts, "split $(_progress_number(split_log.duration)) s")
     push!(parts, "coarse grain $(_progress_number(event.log.coarse_grain_duration)) s")

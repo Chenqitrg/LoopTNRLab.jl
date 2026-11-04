@@ -22,7 +22,7 @@ function RGLog(
     )
 end
 
-mutable struct LoopTNRLog <: ConvergenceLog
+mutable struct LoopTNRLog
     rg_logs::Vector{Union{RGLog{Nothing},RGLog{SplitLog}}}
 end
 

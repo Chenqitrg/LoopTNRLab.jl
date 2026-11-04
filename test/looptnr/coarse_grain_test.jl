@@ -2,7 +2,7 @@
     black = normalization_gate()
     white = normalization_gate()
     source = CheckerboardGates(black, white)
-    optimized = initial_approximation(PeriodicMPS(source), SVDAnsatz())
+    optimized = initial_approximation(PeriodicMPS(source), SVDInitialization())
     tensors_before = copy.(collect(optimized))
 
     coarse = LoopTNRLab._coarse_grain(optimized)

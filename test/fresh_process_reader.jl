@@ -1,5 +1,6 @@
 # Executed in a new Julia process by fresh_process_checkpoint_test.jl.
 using Test, ExecutionLab, PMPSLab, MPSSplitLab, LoopTNRLab, TensorKit, JLD2
+using MPSSplitLab: SplitSnapshot
 using ExecutionLab: step!, isfinished, run_result
 using PeriodicProductsLab
 

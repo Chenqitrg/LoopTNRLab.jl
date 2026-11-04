@@ -13,8 +13,8 @@ function snapshot_loop_algorithm(
         measurement::TNRMeasurement = TNRMeasurement(),
     )
     split_algorithm = ALSSplit(;
-        ansatz=SVDAnsatz(),
-        sweep=CircularSweep(; site_count=8, max_sweeps),
+        initialization=SVDInitialization(),
+        sweep=CircularSweep(; max_sweeps),
         solver=CholeskySolve(),
     )
     return LoopTNR(; split=split_algorithm, max_rg_steps, measurement)
