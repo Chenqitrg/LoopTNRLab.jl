@@ -61,18 +61,19 @@ function observer_step!(
 
     observer.sweep_duration += site_event.log.duration
     active_split = something(run.active_split)
-    site_count = length(active_split.context.approximation)
+    progress = split_progress(active_split)
+    site_count = progress.site_count
     progress_name = "LoopTNR RG $(event.rg)/$(run.algorithm.max_rg_steps) · " *
         "split sweep $sweep · site $(state.site)/$site_count · " *
         "cost $(_progress_number(site_event.log.local_cost))"
-    completed_updates = length(active_split.log.site_logs)
-    maximal_updates = length(active_split.sweep)
+    completed_updates = progress.completed_updates
+    maximal_updates = progress.maximal_updates
     fraction = maximal_updates == 0 ? nothing :
         min(completed_updates / maximal_updates, 1.0)
     _emit_progress!(observer, progress_name; fraction)
 
-    if completes_sweep(state, active_split.pending_iteration)
-        record = last(active_split.log.sweep_logs)
+    if completes_sweep(state, progress.pending_iteration)
+        record = progress.last_sweep
         summary = "LoopTNR RG $(event.rg)/$(run.algorithm.max_rg_steps) · " *
             "split sweep $sweep completed · " *
             "cost $(_progress_number(site_event.log.local_cost)) · " *

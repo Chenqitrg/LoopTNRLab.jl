@@ -33,7 +33,7 @@ end
         @test loaded.completed_rg == 0
         @test length(loaded.measurement_results) == 1
         @test loaded.measurement_results[1].rg == 0
-        @test loaded.active_split isa SplitSnapshot
+        @test loaded.active_split isa ExecutionLab.AbstractAlgorithmSnapshot
         @test length(loaded.active_split.log.site_logs) == 3
 
         restored = restore_run(loaded, algorithm)

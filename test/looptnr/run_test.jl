@@ -55,7 +55,7 @@ end
         )
         @test length(unique(objectid, collect(run.cell))) == 4
         @test fieldtype(typeof(run), :active_split) ==
-            Union{Nothing,SplitRun{typeof(algorithm.split)}}
+            Union{Nothing,AbstractAlgorithmRun}
         @test run.measurement_results isa
             MeasurementHistory{TNRMeasurementResult}
         @test eltype(run.log.rg_logs) ==
@@ -270,7 +270,7 @@ end
     wait(session)
     @test run_status(session) == ExecutionLab.LOCAL_PAUSED
     @test run.phase == LoopTNRLab.TNR_OPTIMIZE
-    @test length(something(run.active_split).log.site_logs) == 4
+    @test split_progress(something(run.active_split)).completed_updates == 4
 
     resume!(session)
     result = fetch(session)

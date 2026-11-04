@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "2b030c2f37e3d167fcf84676b03c7fa905103f8c"
+project_hash = "f7978f2f65d0f474c347f91ba3f17f49b1f10936"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "Dates", "InverseFunctions", "MacroTools"]
@@ -389,7 +389,7 @@ uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "1.0.3"
 
 [[deps.LoopTNRLab]]
-deps = ["AlgorithmConfigLab", "ExecutionLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "TransferEnvironmentsLab", "UUIDs"]
+deps = ["AlgorithmConfigLab", "ExecutionLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "UUIDs", "UpdateLab"]
 path = "."
 uuid = "79a27a1c-33d3-4c94-be41-5c25c0a0db11"
 version = "0.1.0"
@@ -405,10 +405,14 @@ weakdeps = ["Adapt"]
     MPSKitAdaptExt = "Adapt"
 
 [[deps.MPSSplitLab]]
-deps = ["AlgorithmConfigLab", "ExecutionLab", "GaugeFixingLab", "KrylovKit", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TransferEnvironmentsLab", "TransferMatricesLab", "UUIDs"]
+deps = ["AlgorithmConfigLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "TransferMatricesLab", "UUIDs", "UpdateLab"]
 path = "../MPSSplitLab"
 uuid = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
 version = "0.1.0"
+weakdeps = ["ExecutionLab"]
+
+    [deps.MPSSplitLab.extensions]
+    MPSSplitExecutionExt = "ExecutionLab"
 
 [[deps.MacroTools]]
 git-tree-sha1 = "1e0228a030642014fe5cfe68c2c0a818f9e3f522"
@@ -708,6 +712,12 @@ git-tree-sha1 = "9f536263310aae90df175337d586a1655104aae3"
 uuid = "13a9c161-d5da-41f0-bcbd-e1a08ae0647f"
 version = "0.3.9"
 
+[[deps.TensorLinearSolveLab]]
+deps = ["AlgorithmConfigLab", "KrylovKit", "LinearAlgebra", "TensorKit"]
+path = "../TensorLinearSolveLab"
+uuid = "1edcf5f3-8d72-4caf-b59c-7140f702ee01"
+version = "0.1.0"
+
 [[deps.TensorOperations]]
 deps = ["LRUCache", "LinearAlgebra", "PackageExtensionCompat", "PrecompileTools", "Preferences", "PtrArrays", "Strided", "StridedViews", "TupleTools", "VectorInterface"]
 git-tree-sha1 = "c6153e90cf75256cb8b0ae451f0f7c0695dadd8d"
@@ -775,6 +785,12 @@ version = "1.11.0"
 [[deps.Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 version = "1.11.0"
+
+[[deps.UpdateLab]]
+deps = ["AlgorithmConfigLab"]
+path = "../UpdateLab"
+uuid = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
+version = "0.1.0"
 
 [[deps.VectorInterface]]
 deps = ["LinearAlgebra"]

@@ -2,7 +2,7 @@
     @test parentmodule(LoopTNR) === LoopTNRLab
     @test parentmodule(PlaquetteGates) === LoopTNRLab
     @test parentmodule(MeasurementHistory) === LoopTNRLab
-    @test parentmodule(SplitRun) === MPSSplitLab
+    @test !isdefined(MPSSplitLab, :SplitRun)
     @test !isdefined(PMPSLab, :LoopTNR)
     @test !isdefined(PMPSLab, :MeasurementHistory)
 end
@@ -11,5 +11,5 @@ end
     @test parentmodule(AbstractAlgorithmRun) === ExecutionLab
     @test LoopTNRLab.initialize_run === ExecutionLab.initialize_run
     @test LoopTNRLab.snapshot === ExecutionLab.snapshot
-    @test MPSSplitLab.step! === ExecutionLab.step!
+    @test MPSSplitLab.step! !== ExecutionLab.step!
 end

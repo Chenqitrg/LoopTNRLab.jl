@@ -1,5 +1,9 @@
+using UpdateLab
+using UpdateLab: SweepState, Forward, Backward
+using PeriodicProductsLab
+using TensorLinearSolveLab
 using Test, LoopTNRLab, PMPSLab, MPSSplitLab, ExecutionLab, AlgorithmConfigLab
-using MPSSplitLab: SplitRun, SplitSnapshot, SplitLog, SiteLog
+using MPSSplitLab: SplitLog, SiteLog, split_progress
 using ExecutionLab: AbstractAlgorithmRun, AlgorithmEvent, LocalRunSession, start_run!
 using ExecutionLab: initialize_run, step!, isfinished, run_result, snapshot, write_checkpoint
 using GaugeFixingLab, TransferEnvironmentsLab, PeriodicProductsLab

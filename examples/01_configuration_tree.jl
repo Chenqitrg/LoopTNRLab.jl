@@ -1,3 +1,5 @@
+using UpdateLab
+using TensorLinearSolveLab
 # Run from LoopTNRLab: julia --project=. examples/01_configuration_tree.jl
 using AlgorithmConfigLab: @config
 import LoopTNRLab, MPSSplitLab
@@ -8,8 +10,8 @@ LoopTNRLab.LoopTNR
 ├─ max_rg_steps: 2
 └─ split: MPSSplitLab.ALSSplit
    ├─ initialization: MPSSplitLab.SVDInitialization()
-   ├─ solver: MPSSplitLab.CholeskySolve()
-   └─ sweep: MPSSplitLab.CircularSweep
+   ├─ solver: TensorLinearSolveLab.CholeskySolve()
+   └─ sweep: UpdateLab.CircularSweep
       └─ max_sweeps: 4
 """
 display(config)

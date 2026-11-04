@@ -1,12 +1,7 @@
-_split_approximation(run::SplitRun) = run.context.approximation
-_split_approximation(saved::SplitSnapshot) = saved.approximation
-_split_pending_iteration(run::SplitRun) = run.pending_iteration
-_split_pending_iteration(saved::SplitSnapshot) = saved.pending_iteration
-
 function _looptnr_position(
         completed_rg::Int,
         phase::LoopTNRPhase,
-        active_split::Union{Nothing,SplitRun,SplitSnapshot},
+        active_split,
         algorithm::LoopTNR,
     )
     max_rg_steps = algorithm.max_rg_steps
@@ -17,11 +12,12 @@ function _looptnr_position(
     elseif phase == TNR_OPTIMIZE
         active_split === nothing &&
             return "RG $(completed_rg + 1)/$max_rg_steps split pending"
-        pending = _split_pending_iteration(active_split)
+        progress = split_progress(active_split)
+        pending = progress.pending_iteration
         pending === nothing &&
             return "RG $(completed_rg + 1)/$max_rg_steps coarse graining pending"
         state = first(pending)
-        site_count = length(_split_approximation(active_split))
+        site_count = progress.site_count
         return "RG $(completed_rg + 1)/$max_rg_steps · " *
             "split sweep $(state.completed_sweeps + 1) · next site $(state.site)/$site_count"
     elseif phase == TNR_COARSE_GRAIN
@@ -76,11 +72,11 @@ function Base.show(io::IO, ::MIME"text/plain", run::LoopTNRRun)
         "\n  measurements: ", length(run.measurement_results),
     )
     if !isnothing(run.active_split)
-        active_split = run.active_split
+        progress = split_progress(run.active_split)
         print(
             io,
-            "\n  active split: ", length(active_split.log.site_logs),
-            "/", length(active_split.sweep), " site updates",
+            "\n  active split: ", progress.completed_updates,
+            "/", progress.maximal_updates, " site updates",
         )
     end
     return nothing
@@ -132,11 +128,12 @@ function Base.show(io::IO, ::MIME"text/plain", saved::LoopTNRSnapshot)
         "\n  measurements: ", length(saved.measurement_results),
     )
     if !isnothing(saved.active_split)
+        progress = split_progress(saved.active_split)
         print(
             io,
             "\n  active split snapshot: ",
-            length(saved.active_split.log.site_logs), "/",
-            length(sweep_states(saved.identity.algorithm.split.sweep, length(saved.active_split.approximation))), " site updates",
+            progress.completed_updates, "/",
+            progress.maximal_updates, " site updates",
         )
     end
     return nothing

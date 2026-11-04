@@ -17,6 +17,8 @@ GitHub/
 ├── MPSSplitLab/
 ├── AlgorithmConfigLab/
 ├── PeriodicProductsLab/
+├── UpdateLab/
+├── TensorLinearSolveLab/
 ├── TransferMatricesLab/
 ├── TransferEnvironmentsLab/
 ├── GaugeFixingLab/
@@ -37,6 +39,8 @@ Relative sources resolve the sibling packages. All local package versions remain
 using LoopTNRLab
 using PMPSLab
 using MPSSplitLab
+using UpdateLab
+using TensorLinearSolveLab
 using AlgorithmConfigLab: @setconfig
 using ExecutionLab
 using ExecutionLab: initialize_run, LocalRunSession, start_run!

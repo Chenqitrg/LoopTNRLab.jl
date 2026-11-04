@@ -6,12 +6,12 @@ end
     LoopTNRSnapshot
 
 Durable safe-boundary state of a [`LoopTNRRun`](@ref). When a ALS split is
-active, `active_split` contains its nested [`SplitSnapshot`](@ref); committed RG
+active, `active_split` contains its nested split snapshot; committed RG
 measurements remain in the outer `measurement_results` history.
 """
 struct LoopTNRSnapshot{
         G<:GenericGateTensor,
-        P<:Union{Nothing,SplitSnapshot},
+        P<:Union{Nothing,AbstractAlgorithmSnapshot},
         H<:MeasurementHistory,
         I<:LoopTNRProblemIdentity,
     } <: AbstractAlgorithmSnapshot
@@ -24,9 +24,7 @@ struct LoopTNRSnapshot{
     identity::I
 end
 
-_split_state_finished(run::SplitRun) = isfinished(run)
-_split_state_finished(saved::SplitSnapshot) =
-    isnothing(saved.pending_iteration)
+_split_state_finished(split) = isnothing(split_progress(split).pending_iteration)
 
 function _validate_looptnr_records(
         completed_rg::Int,
@@ -191,7 +189,6 @@ function restore_run(saved::LoopTNRSnapshot, algorithm::LoopTNR)
     run = LoopTNRRun{
         typeof(algorithm),
         eltype(cell),
-        typeof(algorithm.split),
         typeof(measurement_results),
     }(
         algorithm,

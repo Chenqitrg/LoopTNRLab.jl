@@ -83,7 +83,7 @@ end
     optimize_saved = snapshot(optimize)
     optimize_restore = restore_run(optimize_saved, algorithm)
     @test optimize_restore.phase == LoopTNRLab.TNR_OPTIMIZE
-    @test length(something(optimize_restore.active_split).log.site_logs) == 3
+    @test split_progress(something(optimize_restore.active_split)).completed_updates == 3
     continuation = step!(optimize_restore)
     @test loop_event_signature(continuation) == (:split, 1, 0, 4)
     step!(optimize)
@@ -142,7 +142,7 @@ end
     @test saved.measurement_results[1].fixed_point !==
           run.measurement_results[1].fixed_point
     @test saved.active_split !== nothing
-    @test saved.active_split.approximation !== something(run.active_split).context.approximation
+    @test saved.active_split.approximation !== something(run.active_split).state.context.approximation
 
     push!(run.measurement_results[1].fixed_point.payload, 99)
     @test saved.measurement_results[1].fixed_point.payload == [4]
@@ -177,7 +177,7 @@ end
     @test saved.phase == LoopTNRLab.TNR_OPTIMIZE
     @test length(saved.measurement_results) == 1
     @test saved.measurement_results[1].rg == 0
-    @test saved.active_split isa SplitSnapshot
+    @test saved.active_split isa ExecutionLab.AbstractAlgorithmSnapshot
     @test length(saved.active_split.log.site_logs) == 4
 
     restored = restore_run(saved, algorithm)

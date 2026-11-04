@@ -9,14 +9,13 @@ end
 mutable struct LoopTNRRun{
         A<:LoopTNR,
         G<:GenericGateTensor,
-        S<:ALSSplit,
         H<:MeasurementHistory,
     } <: AbstractAlgorithmRun
     algorithm::A
     cell::PlaquetteGates{G}
     completed_rg::Int
     phase::LoopTNRPhase
-    active_split::Union{Nothing,SplitRun{S}}
+    active_split::Union{Nothing,AbstractAlgorithmRun}
     log::LoopTNRLog
     measurement_results::H
 end
@@ -36,7 +35,7 @@ struct LoopTNRCoarseGrained{L<:RGLog,R<:TNRMeasurementResult} <: AlgorithmEvent
     result::R
 end
 
-struct LoopTNRSplitStepCompleted{E<:SplitSiteCompleted} <: AlgorithmEvent
+struct LoopTNRSplitStepCompleted{E<:AlgorithmEvent} <: AlgorithmEvent
     rg::Int
     event::E
 end
@@ -57,7 +56,6 @@ function initialize_run(cell::LoopTNRInputCell, algorithm::LoopTNR)
     return LoopTNRRun{
         typeof(algorithm),
         eltype(internal_cell),
-        typeof(algorithm.split),
         typeof(measurement_results),
     }(
         algorithm,
@@ -101,7 +99,7 @@ function _step_active_split!(run::LoopTNRRun)
     return _step_active_split!(run, active_split)
 end
 
-function _step_active_split!(run::LoopTNRRun, active_split::R) where {R<:SplitRun}
+function _step_active_split!(run::LoopTNRRun, active_split::R) where {R<:AbstractAlgorithmRun}
     rg = run.completed_rg + 1
     event = step!(active_split)
     isfinished(active_split) && (run.phase = TNR_COARSE_GRAIN)
@@ -130,7 +128,7 @@ end
 function _coarse_grain_tnr_step!(
         run::LoopTNRRun,
         active_split::R,
-    ) where {R<:SplitRun}
+    ) where {R<:AbstractAlgorithmRun}
     isfinished(active_split) || throw(ArgumentError(
         "LoopTNR cannot coarse grain an unfinished active split"
     ))

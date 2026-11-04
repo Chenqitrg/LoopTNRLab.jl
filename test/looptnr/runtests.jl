@@ -1,3 +1,5 @@
+using PeriodicProductsLab
+using TensorLinearSolveLab
 include("normalization_test.jl")
 include("interface_test.jl")
 include("coarse_grain_test.jl")
