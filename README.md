@@ -39,6 +39,7 @@ using PMPSLab
 using MPSSplitLab
 using AlgorithmConfigLab: @setconfig
 using ExecutionLab
+using ExecutionLab: initialize_run, LocalRunSession, start_run!
 using TensorKit
 
 gate_space = ℂ^2 ⊗ ℂ^2 ← ℂ^2 ⊗ ℂ^2

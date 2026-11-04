@@ -1,6 +1,8 @@
 module LoopTNRLab
 
 using ExecutionLab
+using ExecutionLab: LocalRunSession
+using ExecutionLab: AbstractAlgorithmRun, AbstractAlgorithmSnapshot, AlgorithmEvent
 using PMPSLab
 using MPSSplitLab
 using AlgorithmConfigLab: AbstractAlgorithmConfig
