@@ -11,7 +11,7 @@ abstract type AbstractNormalization <: AbstractAlgorithmConfig end
 Normalize the independently stored gates of a tensor cell by the geometric
 mean of their coefficient infinity norms.
 """
-struct InfinityNormNormalization <: AbstractNormalization end
+@option struct InfinityNormNormalization <: AbstractNormalization end
 
 """
     NormalizationResult(scale, log_scale)

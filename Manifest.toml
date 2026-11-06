@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "f7978f2f65d0f474c347f91ba3f17f49b1f10936"
+project_hash = "95a56a44c8848b0101e7cbdd3a74b7237814c0cb"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "Dates", "InverseFunctions", "MacroTools"]
@@ -43,17 +43,21 @@ version = "4.7.0"
     StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [[deps.AlgorithmConfigLab]]
+deps = ["Configurations"]
 path = "../AlgorithmConfigLab"
 uuid = "b0e90283-4d54-4d8d-bc0c-6244e78caa43"
 version = "0.1.0"
+weakdeps = ["JSON", "MatrixAlgebraKit"]
 
     [deps.AlgorithmConfigLab.extensions]
     AlgorithmConfigLabJSONExt = "JSON"
     AlgorithmConfigLabMatrixAlgebraKitExt = "MatrixAlgebraKit"
 
-    [deps.AlgorithmConfigLab.weakdeps]
-    JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
-    MatrixAlgebraKit = "6c742aac-3347-4629-af66-fc926824e5e4"
+[[deps.AlgorithmDataLab]]
+deps = ["AlgorithmConfigLab", "Dates", "JSON", "Serialization", "UUIDs"]
+path = "../AlgorithmDataLab"
+uuid = "30e23d37-15d8-4d62-b06b-253c1d507eac"
+version = "0.1.0"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -175,6 +179,12 @@ weakdeps = ["InverseFunctions"]
     [deps.CompositionsBase.extensions]
     CompositionsBaseInverseFunctionsExt = "InverseFunctions"
 
+[[deps.Configurations]]
+deps = ["ExproniconLite", "OrderedCollections", "TOML"]
+git-tree-sha1 = "4358750bb58a3caefd5f37a4a0c5bfdbbf075252"
+uuid = "5218b696-f38b-4ac9-8b61-a12ec717816d"
+version = "0.17.6"
+
 [[deps.ConstructionBase]]
 git-tree-sha1 = "b4b092499347b18a015186eae3042f72267106cb"
 uuid = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
@@ -222,6 +232,11 @@ git-tree-sha1 = "d2e49e7efd29719d6f28b891b0e0e159daa9d2b4"
 uuid = "e2ba6199-217a-4e67-a87a-7c52f15ade04"
 version = "0.1.11"
 
+[[deps.ExproniconLite]]
+git-tree-sha1 = "250aa1562e840b38c72b44a9ebef0f39f6b6e950"
+uuid = "55351af7-c7e9-48d6-89ff-24e801d99491"
+version = "0.10.16"
+
 [[deps.FileIO]]
 deps = ["Pkg", "Requires", "UUIDs"]
 git-tree-sha1 = "6621fef488e496356c9c9625d0562c12a6070819"
@@ -257,7 +272,7 @@ version = "1.17.0"
     Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [[deps.GaugeFixingLab]]
-deps = ["AlgorithmConfigLab", "LinearAlgebra", "MPSKit", "PMPSLab", "TensorKit"]
+deps = ["AlgorithmConfigLab", "Configurations", "LinearAlgebra", "MPSKit", "PMPSLab", "TensorKit"]
 path = "../GaugeFixingLab"
 uuid = "aa667719-725a-491d-a593-e8aee8158101"
 version = "0.1.0"
@@ -317,6 +332,20 @@ deps = ["Artifacts", "Preferences"]
 git-tree-sha1 = "7204148362dafe5fe6a273f855b8ccbe4df8173e"
 uuid = "692b3bcd-3c85-4b1f-b108-f13ce0eb3210"
 version = "1.8.0"
+
+[[deps.JSON]]
+deps = ["Dates", "Logging", "Parsers", "PrecompileTools", "StructUtils", "UUIDs", "Unicode"]
+git-tree-sha1 = "06d90f699285d055e34f0b014636a75a17ff2252"
+uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+version = "1.13.4"
+
+    [deps.JSON.extensions]
+    JSONArrowExt = ["ArrowTypes"]
+    JSONSerializationExt = ["Serialization"]
+
+    [deps.JSON.weakdeps]
+    ArrowTypes = "31f734f8-188a-4ce0-8406-c8a06bd891cd"
+    Serialization = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
 [[deps.JuliaSyntaxHighlighting]]
 deps = ["StyledStrings"]
@@ -389,7 +418,7 @@ uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "1.0.3"
 
 [[deps.LoopTNRLab]]
-deps = ["AlgorithmConfigLab", "ExecutionLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "UUIDs", "UpdateLab"]
+deps = ["AlgorithmConfigLab", "AlgorithmDataLab", "Configurations", "ExecutionLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "UUIDs", "UpdateLab"]
 path = "."
 uuid = "79a27a1c-33d3-4c94-be41-5c25c0a0db11"
 version = "0.1.0"
@@ -405,7 +434,7 @@ weakdeps = ["Adapt"]
     MPSKitAdaptExt = "Adapt"
 
 [[deps.MPSSplitLab]]
-deps = ["AlgorithmConfigLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "TransferMatricesLab", "UUIDs", "UpdateLab"]
+deps = ["AlgorithmConfigLab", "Configurations", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "TransferMatricesLab", "UUIDs", "UpdateLab"]
 path = "../MPSSplitLab"
 uuid = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
 version = "0.1.0"
@@ -491,9 +520,9 @@ uuid = "77e91f04-9b3b-57a6-a776-40b61faaebe0"
 version = "0.4.3"
 
 [[deps.OrderedCollections]]
-git-tree-sha1 = "05f45c2e0de6259db764adbfd2f1dc6d3f8de13c"
+git-tree-sha1 = "94ba93778373a53bfd5a0caaf7d809c445292ff4"
 uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
-version = "2.0.1"
+version = "1.8.2"
 
 [[deps.PMPSLab]]
 deps = ["MPSKit", "Random", "TensorKit"]
@@ -506,6 +535,12 @@ git-tree-sha1 = "fb28e33b8a95c4cee25ce296c817d89cc2e53518"
 uuid = "65ce6f38-6b18-4e1d-a461-8949797d7930"
 version = "1.0.2"
 weakdeps = ["Requires", "TOML"]
+
+[[deps.Parsers]]
+deps = ["Dates", "PrecompileTools"]
+git-tree-sha1 = "91503bbab255aec9374145accd1b09c7e108cd54"
+uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
+version = "3.0.5"
 
 [[deps.PeriodicProductsLab]]
 deps = ["LinearAlgebra", "TensorKit"]
@@ -655,6 +690,28 @@ version = "0.5.2"
     Metal = "dde4c033-4e86-420c-a63e-0dd931031962"
     PtrArrays = "43287f4e-b6f4-7ad1-bb20-aadabca52c3d"
 
+[[deps.StructUtils]]
+deps = ["Dates", "UUIDs"]
+git-tree-sha1 = "b04bfab37484defe300b2f9ed64469abab2431ff"
+uuid = "ec057cc2-7a8d-4b58-b3b3-92acb9f63b42"
+version = "2.12.0"
+
+    [deps.StructUtils.extensions]
+    StructUtilsDBInterfaceExt = ["DBInterface", "Tables"]
+    StructUtilsDataFramesExt = ["DataFrames"]
+    StructUtilsLazilyInitializedFieldsExt = ["LazilyInitializedFields"]
+    StructUtilsMeasurementsExt = ["Measurements"]
+    StructUtilsStaticArraysCoreExt = ["StaticArraysCore"]
+    StructUtilsTablesExt = ["Tables"]
+
+    [deps.StructUtils.weakdeps]
+    DBInterface = "a10d1c49-ce27-4219-8d33-6db1a4562965"
+    DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+    LazilyInitializedFields = "0e77f7df-68c5-4e49-93ce-4cd80f5598bf"
+    Measurements = "eff96d63-e80a-5855-80a2-b1b0885c5ab7"
+    StaticArraysCore = "1e83bf80-4336-4d27-bf5d-d5a4f845583c"
+    Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+
 [[deps.StyledStrings]]
 uuid = "f489334b-da3d-4c2e-b8f0-e476e12c162b"
 version = "1.11.0"
@@ -713,7 +770,7 @@ uuid = "13a9c161-d5da-41f0-bcbd-e1a08ae0647f"
 version = "0.3.9"
 
 [[deps.TensorLinearSolveLab]]
-deps = ["AlgorithmConfigLab", "KrylovKit", "LinearAlgebra", "TensorKit"]
+deps = ["AlgorithmConfigLab", "Configurations", "KrylovKit", "LinearAlgebra", "TensorKit"]
 path = "../TensorLinearSolveLab"
 uuid = "1edcf5f3-8d72-4caf-b59c-7140f702ee01"
 version = "0.1.0"
@@ -757,7 +814,7 @@ version = "0.5.29"
     FlameGraphs = "08572546-2f56-4bcf-ba4e-bab62c3a3f89"
 
 [[deps.TransferEnvironmentsLab]]
-deps = ["AlgorithmConfigLab", "LinearAlgebra", "MPSKit", "PMPSLab", "PeriodicProductsLab", "TensorKit", "TransferMatricesLab"]
+deps = ["AlgorithmConfigLab", "Configurations", "LinearAlgebra", "MPSKit", "PMPSLab", "PeriodicProductsLab", "TensorKit", "TransferMatricesLab"]
 path = "../TransferEnvironmentsLab"
 uuid = "00da41fc-476d-4222-bd5b-a569ec08fa45"
 version = "0.1.0"
@@ -787,7 +844,7 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 version = "1.11.0"
 
 [[deps.UpdateLab]]
-deps = ["AlgorithmConfigLab"]
+deps = ["AlgorithmConfigLab", "Configurations"]
 path = "../UpdateLab"
 uuid = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
 version = "0.1.0"

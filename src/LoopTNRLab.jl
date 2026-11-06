@@ -1,5 +1,7 @@
 module LoopTNRLab
 
+using Configurations: @option
+
 using ExecutionLab
 using ExecutionLab: LocalRunSession
 using ExecutionLab: AbstractAlgorithmRun, AbstractAlgorithmSnapshot, AlgorithmEvent
@@ -51,6 +53,5 @@ include("looptnr/snapshot.jl")
 include("looptnr/show.jl")
 include("looptnr/progress.jl")
 include("checkpoint.jl")
-include("configuration.jl")
 
 end

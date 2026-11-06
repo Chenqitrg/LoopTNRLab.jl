@@ -4,6 +4,8 @@ version = "0.1.0"
 authors = []
 
 [deps]
+Configurations = "5218b696-f38b-4ac9-8b61-a12ec717816d"
+AlgorithmDataLab = "30e23d37-15d8-4d62-b06b-253c1d507eac"
 UpdateLab = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
 TensorLinearSolveLab = "1edcf5f3-8d72-4caf-b59c-7140f702ee01"
 PMPSLab = "671cd7e2-a4a1-40fd-ad7d-501014e12597"
@@ -20,6 +22,7 @@ TensorKit = "07d1fe3e-3e46-537d-9eac-e9e13d0d4cec"
 UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
 [sources]
+AlgorithmDataLab = {path = "../AlgorithmDataLab"}
 UpdateLab = {path = "../UpdateLab"}
 TensorLinearSolveLab = {path = "../TensorLinearSolveLab"}
 PMPSLab = {path = "../PMPSLab"}
@@ -31,7 +34,9 @@ ExecutionLab = {path = "../ExecutionLab"}
 MPSSplitLab = {path = "../MPSSplitLab"}
 
 [compat]
+Configurations = "0.17.6"
 Accessors = "0.1.44"
+AlgorithmDataLab = "0.1"
 UpdateLab = "0.1"
 TensorLinearSolveLab = "0.1"
 PMPSLab = "0.1"

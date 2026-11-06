@@ -3,7 +3,7 @@
 
 Configuration for Loop tensor-network renormalization.
 """
-@kwdef struct LoopTNR{
+@option struct LoopTNR{
         S<:ALSSplit,
         M<:TNRMeasurement,
     } <: AbstractAlgorithmConfig
@@ -11,7 +11,7 @@ Configuration for Loop tensor-network renormalization.
     max_rg_steps::Int
     measurement::M = TNRMeasurement()
 
-    function LoopTNR(
+    function LoopTNR{S,M}(
             split::S,
             max_rg_steps::Integer,
             measurement::M,
@@ -23,6 +23,9 @@ Configuration for Loop tensor-network renormalization.
         return new{S,M}(split, rg_count, measurement)
     end
 end
+
+LoopTNR(split::S, max_rg_steps::Integer, measurement::M) where {S,M} =
+    LoopTNR{S,M}(split, max_rg_steps, measurement)
 
 """
     default_looptnr(; max_rg_steps, dcut)

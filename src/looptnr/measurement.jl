@@ -10,7 +10,7 @@ abstract type AbstractFixedPointMeasurement <: AbstractMeasurement end
 
 Disable the optional fixed-point measurement at LoopTNR RG boundaries.
 """
-struct NoFixedPointMeasurement <: AbstractFixedPointMeasurement end
+@option struct NoFixedPointMeasurement <: AbstractFixedPointMeasurement end
 
 """
     TNRMeasurement(;
@@ -21,7 +21,7 @@ struct NoFixedPointMeasurement <: AbstractFixedPointMeasurement end
 Configuration of the scientific measurements performed at each LoopTNR RG
 boundary.
 """
-@kwdef struct TNRMeasurement{
+@option struct TNRMeasurement{
         N<:AbstractNormalization,
         F<:AbstractFixedPointMeasurement,
     } <: AbstractMeasurement
