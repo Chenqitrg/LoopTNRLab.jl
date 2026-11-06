@@ -41,7 +41,7 @@ using PMPSLab
 using MPSSplitLab
 using UpdateLab
 using TensorLinearSolveLab
-using AlgorithmConfigLab: @setconfig
+using Accessors: @set, @reset
 using ExecutionLab
 using ExecutionLab: initialize_run, LocalRunSession, start_run!
 using TensorKit
@@ -77,24 +77,21 @@ sweep-to-sweep cost change is below `1e-2`. Every RG boundary is normalized by
 the coefficient infinity norm; fixed-point transfer measurements remain
 disabled until their eigensolver is available.
 
-Algorithm configurations are immutable values. Use `@setconfig` to derive a
-modified configuration. Its `/`-separated paths follow the displayed
-configuration tree from root to leaf:
+Algorithm configurations are immutable values. Use Accessors directly to
+update nested properties:
 
 ```julia
-tnr = @setconfig tnr begin
-    max_rg_steps = 4
-    split/sweep/max_sweeps = 60
-    split/stopping/atol = 1e-10
-end
+using Accessors: @set, @reset
+candidate = @set tnr.max_rg_steps = 4
+@reset candidate.split.sweep.max_sweeps = 60
+@reset candidate.split.stopping.atol = 1e-10
 ```
 
-The original `tnr` is unchanged unless the returned value is assigned back to
-it. A whole strategy can also be replaced, even when that changes the concrete
-configuration type:
+The original `tnr` is unchanged. Each `@reset` separately rebinds `candidate`.
+A whole strategy can also be replaced, even when its concrete type changes:
 
 ```julia
-tnr = @setconfig tnr split/stopping = NoStopping()
+@reset candidate.split.stopping = NoStopping()
 ```
 
 In an interactive session the default observer uses one replaceable progress
