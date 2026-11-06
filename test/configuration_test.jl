@@ -1,4 +1,4 @@
-using AlgorithmConfigLab: @config, configtree
+using ExperimentLab: @config, configtree
 using Configurations: to_dict, from_dict
 using TensorKit: MatrixAlgebraKit
 

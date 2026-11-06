@@ -15,7 +15,7 @@ GitHub/
 ├── ExecutionLab/
 ├── PMPSLab/
 ├── MPSSplitLab/
-├── AlgorithmConfigLab/
+├── ExperimentLab/
 ├── PeriodicProductsLab/
 ├── UpdateLab/
 ├── TensorLinearSolveLab/
@@ -224,4 +224,4 @@ See [the standalone configuration example](examples/01_configuration_tree.jl).
 It constructs existing configuration types from graphical or indented trees;
 it does not define new types or run numerical work. The owning package supplies
 package-owned default metadata and serialization support for supported
-configuration interchange. JSON file I/O is optional through AlgorithmConfigLab.
+configuration interchange. JSON file I/O is provided by ExperimentLab.

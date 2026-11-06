@@ -9,7 +9,7 @@ AlgorithmDataLab = "30e23d37-15d8-4d62-b06b-253c1d507eac"
 UpdateLab = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
 TensorLinearSolveLab = "1edcf5f3-8d72-4caf-b59c-7140f702ee01"
 PMPSLab = "671cd7e2-a4a1-40fd-ad7d-501014e12597"
-AlgorithmConfigLab = "b0e90283-4d54-4d8d-bc0c-6244e78caa43"
+ExperimentLab = "29f77e63-5c80-4c5a-8fc3-cbf639322b6d"
 GaugeFixingLab = "aa667719-725a-491d-a593-e8aee8158101"
 TransferEnvironmentsLab = "00da41fc-476d-4222-bd5b-a569ec08fa45"
 ExecutionLab = "4dd3bba2-2046-4a6b-95c2-394d9ad1e82c"
@@ -26,7 +26,7 @@ AlgorithmDataLab = {path = "../AlgorithmDataLab"}
 UpdateLab = {path = "../UpdateLab"}
 TensorLinearSolveLab = {path = "../TensorLinearSolveLab"}
 PMPSLab = {path = "../PMPSLab"}
-AlgorithmConfigLab = {path = "../AlgorithmConfigLab"}
+ExperimentLab = {path = "../ExperimentLab"}
 GaugeFixingLab = {path = "../GaugeFixingLab"}
 TransferEnvironmentsLab = {path = "../TransferEnvironmentsLab"}
 PeriodicProductsLab = {path = "../PeriodicProductsLab"}
@@ -40,7 +40,7 @@ AlgorithmDataLab = "0.1"
 UpdateLab = "0.1"
 TensorLinearSolveLab = "0.1"
 PMPSLab = "0.1"
-AlgorithmConfigLab = "0.1"
+ExperimentLab = "0.1"
 GaugeFixingLab = "0.1"
 TransferEnvironmentsLab = "0.1"
 PeriodicProductsLab = "0.1"

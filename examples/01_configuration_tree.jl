@@ -1,7 +1,7 @@
 using UpdateLab
 using TensorLinearSolveLab
 # Run from LoopTNRLab: julia --project=. examples/01_configuration_tree.jl
-using AlgorithmConfigLab: @config
+using ExperimentLab: @config
 import LoopTNRLab, MPSSplitLab
 using Test: @test
 

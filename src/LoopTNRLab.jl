@@ -10,7 +10,7 @@ using MPSSplitLab
 using UpdateLab: CircularSweep, sweep_states, completes_sweep
 using TensorLinearSolveLab: LDLTSolve
 using MPSSplitLab: SplitLog, split_progress
-using AlgorithmConfigLab: AbstractAlgorithmConfig
+using ExperimentLab: AbstractAlgorithmConfig
 using GaugeFixingLab: ProjectorGaugeFix
 using TransferEnvironmentsLab: DenseTransferPolicy
 using TensorKit

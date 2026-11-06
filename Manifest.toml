@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "95a56a44c8848b0101e7cbdd3a74b7237814c0cb"
+project_hash = "40d30c4e2599a449b99eee2a7fa6377c56baf210"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "Dates", "InverseFunctions", "MacroTools"]
@@ -42,19 +42,8 @@ version = "4.7.0"
     SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
     StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
-[[deps.AlgorithmConfigLab]]
-deps = ["Configurations"]
-path = "../AlgorithmConfigLab"
-uuid = "b0e90283-4d54-4d8d-bc0c-6244e78caa43"
-version = "0.1.0"
-weakdeps = ["JSON", "MatrixAlgebraKit"]
-
-    [deps.AlgorithmConfigLab.extensions]
-    AlgorithmConfigLabJSONExt = "JSON"
-    AlgorithmConfigLabMatrixAlgebraKitExt = "MatrixAlgebraKit"
-
 [[deps.AlgorithmDataLab]]
-deps = ["AlgorithmConfigLab", "Dates", "JSON", "Serialization", "UUIDs"]
+deps = ["Dates", "ExperimentLab", "JSON", "Serialization", "UUIDs"]
 path = "../AlgorithmDataLab"
 uuid = "30e23d37-15d8-4d62-b06b-253c1d507eac"
 version = "0.1.0"
@@ -227,6 +216,16 @@ path = "../ExecutionLab"
 uuid = "4dd3bba2-2046-4a6b-95c2-394d9ad1e82c"
 version = "0.1.0"
 
+[[deps.ExperimentLab]]
+deps = ["Configurations", "Dates", "JSON", "Logging", "LoggingExtras", "LoggingFormats", "Serialization", "UUIDs"]
+path = "../ExperimentLab"
+uuid = "29f77e63-5c80-4c5a-8fc3-cbf639322b6d"
+version = "0.1.0"
+weakdeps = ["MatrixAlgebraKit"]
+
+    [deps.ExperimentLab.extensions]
+    ExperimentLabMatrixAlgebraKitExt = "MatrixAlgebraKit"
+
 [[deps.ExprTools]]
 git-tree-sha1 = "d2e49e7efd29719d6f28b891b0e0e159daa9d2b4"
 uuid = "e2ba6199-217a-4e67-a87a-7c52f15ade04"
@@ -272,7 +271,7 @@ version = "1.17.0"
     Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [[deps.GaugeFixingLab]]
-deps = ["AlgorithmConfigLab", "Configurations", "LinearAlgebra", "MPSKit", "PMPSLab", "TensorKit"]
+deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "MPSKit", "PMPSLab", "TensorKit"]
 path = "../GaugeFixingLab"
 uuid = "aa667719-725a-491d-a593-e8aee8158101"
 version = "0.1.0"
@@ -417,8 +416,14 @@ git-tree-sha1 = "c1dd6d7978c12545b4179fb6153b9250c96b0075"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "1.0.3"
 
+[[deps.LoggingFormats]]
+deps = ["JSON", "Logging"]
+git-tree-sha1 = "31e06d0fb6369872cfee16d4ba378caef6f7b63d"
+uuid = "98105f81-4425-4516-93fd-1664fb551ab6"
+version = "1.6.0"
+
 [[deps.LoopTNRLab]]
-deps = ["AlgorithmConfigLab", "AlgorithmDataLab", "Configurations", "ExecutionLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "UUIDs", "UpdateLab"]
+deps = ["AlgorithmDataLab", "Configurations", "ExecutionLab", "ExperimentLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "UUIDs", "UpdateLab"]
 path = "."
 uuid = "79a27a1c-33d3-4c94-be41-5c25c0a0db11"
 version = "0.1.0"
@@ -434,7 +439,7 @@ weakdeps = ["Adapt"]
     MPSKitAdaptExt = "Adapt"
 
 [[deps.MPSSplitLab]]
-deps = ["AlgorithmConfigLab", "Configurations", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "TransferMatricesLab", "UUIDs", "UpdateLab"]
+deps = ["Configurations", "ExperimentLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "TransferMatricesLab", "UUIDs", "UpdateLab"]
 path = "../MPSSplitLab"
 uuid = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
 version = "0.1.0"
@@ -770,7 +775,7 @@ uuid = "13a9c161-d5da-41f0-bcbd-e1a08ae0647f"
 version = "0.3.9"
 
 [[deps.TensorLinearSolveLab]]
-deps = ["AlgorithmConfigLab", "Configurations", "KrylovKit", "LinearAlgebra", "TensorKit"]
+deps = ["Configurations", "ExperimentLab", "KrylovKit", "LinearAlgebra", "TensorKit"]
 path = "../TensorLinearSolveLab"
 uuid = "1edcf5f3-8d72-4caf-b59c-7140f702ee01"
 version = "0.1.0"
@@ -814,7 +819,7 @@ version = "0.5.29"
     FlameGraphs = "08572546-2f56-4bcf-ba4e-bab62c3a3f89"
 
 [[deps.TransferEnvironmentsLab]]
-deps = ["AlgorithmConfigLab", "Configurations", "LinearAlgebra", "MPSKit", "PMPSLab", "PeriodicProductsLab", "TensorKit", "TransferMatricesLab"]
+deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "MPSKit", "PMPSLab", "PeriodicProductsLab", "TensorKit", "TransferMatricesLab"]
 path = "../TransferEnvironmentsLab"
 uuid = "00da41fc-476d-4222-bd5b-a569ec08fa45"
 version = "0.1.0"
@@ -844,7 +849,7 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 version = "1.11.0"
 
 [[deps.UpdateLab]]
-deps = ["AlgorithmConfigLab", "Configurations"]
+deps = ["Configurations", "ExperimentLab"]
 path = "../UpdateLab"
 uuid = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
 version = "0.1.0"
