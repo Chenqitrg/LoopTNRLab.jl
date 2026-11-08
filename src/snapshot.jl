@@ -28,7 +28,7 @@ function restore_tnr(saved::TNRSnapshot)
     assertconsistency(saved.cell)
     cell = copy(saved.cell)
     split = isnothing(saved.active_split) ? nothing :
-        MPSSplitLab.restore_split(saved.active_split, PeriodicMPS(cell; copy=false); algorithm=algorithm.split)
+        PMPSLab.restore_split(saved.active_split, PeriodicMPS(cell; copy=false); algorithm=algorithm.split)
     return LoopTNRState(deepcopy(algorithm), cell, rg, split)
 end
 

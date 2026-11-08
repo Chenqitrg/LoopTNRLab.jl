@@ -1,11 +1,11 @@
-using Test, LoopTNRLab, PMPSLab, MPSSplitLab, ExperimentLab
-using UpdateLab, TensorLinearSolveLab, PMPSLab
+using Test, LoopTNRLab, PMPSLab, ExperimentLab
+using LatticeIteratorLab, TensorLinearSolveLab
 using TensorKit, LinearAlgebra, Logging
 using Accessors: @set
 
 include("fixtures.jl")
 @testset "cross-package method ambiguities" begin
-    @test isempty(detect_ambiguities(LoopTNRLab, PMPSLab, MPSSplitLab, ExperimentLab; recursive=true))
+    @test isempty(detect_ambiguities(LoopTNRLab, PMPSLab, ExperimentLab; recursive=true))
 end
 include("package_boundary_test.jl")
 include("accessors_test.jl")

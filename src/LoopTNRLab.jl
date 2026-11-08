@@ -2,8 +2,8 @@ module LoopTNRLab
 
 using TensorKit, LinearAlgebra
 using ResumableFunctions: ResumableFunctions, @resumable, @yield, @yieldfrom, @nosave
-import Configurations, ExperimentLab, MPSSplitLab, PMPSLab, Random
-import TensorLinearSolveLab, UpdateLab
+import Configurations, ExperimentLab, PMPSLab, Random
+import TensorLinearSolveLab, LatticeIteratorLab
 import PMPSLab: PeriodicMPS, assertconsistency, standardize
 
 export AbstractTensorCell, UniformGates, CheckerboardGates, PlaquetteGates

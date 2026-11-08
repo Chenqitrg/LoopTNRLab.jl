@@ -1,17 +1,17 @@
-using UpdateLab
+using LatticeIteratorLab
 using TensorLinearSolveLab
 # Run from LoopTNRLab: julia --project=. examples/01_configuration_tree.jl
 using ExperimentLab: @config
-import LoopTNRLab, MPSSplitLab
+import LoopTNRLab, PMPSLab
 using Test: @test
 
 config = @config """
 LoopTNRLab.LoopTNR
 ├─ max_rg_steps: 2
-└─ split: MPSSplitLab.ALSSplit
-   ├─ initialization: MPSSplitLab.SVDInitialization()
+└─ split: PMPSLab.ALSSplit
+   ├─ initialization: PMPSLab.SVDInitialization()
    ├─ solver: TensorLinearSolveLab.CholeskySolve()
-   └─ sweep: UpdateLab.CircularSweep
+   └─ sweep: LatticeIteratorLab.CircularSweep
       └─ max_sweeps: 4
 """
 display(config)

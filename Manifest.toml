@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "f81917ec45b01d788fd0f42c471c90a68cd5631b"
+project_hash = "7ef7dd1623f871b82c53295f742045cf66cfe1dd"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "Dates", "InverseFunctions", "MacroTools"]
@@ -354,6 +354,12 @@ weakdeps = ["Serialization"]
     [deps.LRUCache.extensions]
     SerializationExt = ["Serialization"]
 
+[[deps.LatticeIteratorLab]]
+deps = ["Configurations", "ExperimentLab"]
+path = "../LatticeIteratorLab"
+uuid = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
+version = "0.1.0"
+
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
@@ -405,7 +411,7 @@ uuid = "98105f81-4425-4516-93fd-1664fb551ab6"
 version = "1.6.0"
 
 [[deps.LoopTNRLab]]
-deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "Random", "ResumableFunctions", "TensorKit", "TensorLinearSolveLab", "UpdateLab"]
+deps = ["Configurations", "ExperimentLab", "LatticeIteratorLab", "LinearAlgebra", "Logging", "PMPSLab", "Random", "ResumableFunctions", "TensorKit", "TensorLinearSolveLab"]
 path = "."
 uuid = "79a27a1c-33d3-4c94-be41-5c25c0a0db11"
 version = "0.1.0"
@@ -419,12 +425,6 @@ weakdeps = ["Adapt"]
 
     [deps.MPSKit.extensions]
     MPSKitAdaptExt = "Adapt"
-
-[[deps.MPSSplitLab]]
-deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "Random", "ResumableFunctions", "TensorKit", "TensorLinearSolveLab", "TransferMatricesLab", "UpdateLab"]
-path = "../MPSSplitLab"
-uuid = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
-version = "0.1.0"
 
 [[deps.MacroTools]]
 git-tree-sha1 = "1e0228a030642014fe5cfe68c2c0a818f9e3f522"
@@ -508,7 +508,7 @@ uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 version = "1.8.2"
 
 [[deps.PMPSLab]]
-deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "MPSKit", "PeriodicProductsLab", "Random", "TensorKit", "TransferMatricesLab"]
+deps = ["Configurations", "ExperimentLab", "LatticeIteratorLab", "LinearAlgebra", "Logging", "MPSKit", "MatrixAlgebraKit", "PeriodicProductsLab", "Random", "ResumableFunctions", "TensorKit", "TensorLinearSolveLab"]
 path = "../PMPSLab"
 uuid = "671cd7e2-a4a1-40fd-ad7d-501014e12597"
 version = "0.1.0"
@@ -796,16 +796,6 @@ version = "0.5.29"
     [deps.TimerOutputs.weakdeps]
     FlameGraphs = "08572546-2f56-4bcf-ba4e-bab62c3a3f89"
 
-[[deps.TransferMatricesLab]]
-deps = ["LinearAlgebra", "MPSKit", "MatrixAlgebraKit", "TensorKit"]
-path = "../TransferMatricesLab"
-uuid = "32740eca-525e-449a-9a92-5b9caafb409d"
-version = "0.1.0"
-weakdeps = ["PMPSLab"]
-
-    [deps.TransferMatricesLab.extensions]
-    TransferMatricesPMPSLabExt = "PMPSLab"
-
 [[deps.TupleTools]]
 git-tree-sha1 = "41e43b9dc950775eac654b9f845c839cd2f1821e"
 uuid = "9d95972d-f1c8-5527-a6e0-b4b365fa01f6"
@@ -819,12 +809,6 @@ version = "1.11.0"
 [[deps.Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 version = "1.11.0"
-
-[[deps.UpdateLab]]
-deps = ["Configurations", "ExperimentLab"]
-path = "../UpdateLab"
-uuid = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
-version = "0.1.0"
 
 [[deps.VectorInterface]]
 deps = ["LinearAlgebra"]

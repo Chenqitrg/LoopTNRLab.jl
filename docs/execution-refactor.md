@@ -8,16 +8,16 @@ no compatibility layer: no production data or applications require the old API.
 | Work | Owner |
 | --- | --- |
 | Cell layout, normalization and coarse graining | LoopTNRLab |
-| Site updates, convergence, NNR and split restart | MPSSplitLab |
+| Site updates, convergence, NNR and split restart | PMPSLab |
 | Pause, resume, cancel, failure and final return | ExperimentLab Session |
 | Log files, state/snapshot references and measurement history | ExperimentLab DataStore |
 | Which measurements/snapshots to retain | Application callback |
 
-The outer generator uses `@yieldfrom MPSSplitLab.split_steps(...)`. It forwards
+The outer generator uses `@yieldfrom PMPSLab.split_steps(...)`. It forwards
 the original SplitProgress values and adds an RGProgress only after a committed
 normalization/coarse-graining boundary. No second phase enum or stepping protocol
 is required. Each package records its own events in the current execution log.
-MPSSplitLab receives no RG context or logging parameters from the outer algorithm.
+PMPSLab receives no RG context or logging parameters from the outer algorithm.
 LoopTNR accepts AbstractSplit algorithms. SplitProgress is specific to ALS;
 other implementations yield their own events. Coarse graining consumes the
 generator's returned `mps`, rather than reaching into the optimizer's workspace.
@@ -31,7 +31,7 @@ does not roll back a committed numerical step; ExperimentLab records its attempt
 An external callback failure fails the Session, leaving numerical state inspectable.
 
 TNRSnapshot stores the same continuation information, replacing the split
-workspace with MPSSplitLab's cache-free snapshot. The split target is derived
+workspace with PMPSLab's cache-free snapshot. The split target is derived
 from the committed cell. It is not written again. No diagnostic history or live
 generator is saved. Restoration validates the RG range and split configuration;
 The split implementation validates and rebuilds its own continuation. The outer

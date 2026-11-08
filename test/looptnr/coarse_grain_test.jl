@@ -1,3 +1,4 @@
+using PMPSLab: SVDInitialization
 @testset "LoopTNR coarse graining — designed split input" begin
     black = normalization_gate()
     white = normalization_gate()

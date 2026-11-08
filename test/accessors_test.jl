@@ -1,3 +1,4 @@
+using PMPSLab: NoStopping
 using Accessors: @set, @reset
 
 @testset "Accessors — functional algorithm updates" begin

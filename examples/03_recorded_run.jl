@@ -1,7 +1,7 @@
 # Run from LoopTNRLab: julia --project=. examples/03_recorded_run.jl
-using LoopTNRLab, MPSSplitLab, TensorKit, LinearAlgebra
+using LoopTNRLab, PMPSLab, TensorKit, LinearAlgebra
 using ExperimentLab, Configurations
-import UpdateLab, TensorLinearSolveLab
+import LatticeIteratorLab, TensorLinearSolveLab
 
 # Measurement definitions belong to the application (or a scientific package).
 # They use ExperimentLab directly; LoopTNR needs no measurement adapter/history.
@@ -16,7 +16,7 @@ ExperimentLab.config_registry(::Type{CellNorms}) =
 
 cell = UniformGates(ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1))
 algorithm = LoopTNR(max_rg_steps=1,
-    split=ALSSplit(sweep=UpdateLab.CircularSweep(max_sweeps=1),
+    split=ALSSplit(sweep=LatticeIteratorLab.CircularSweep(max_sweeps=1),
         solver=TensorLinearSolveLab.CholeskySolve()))
 store = DataStore(mktempdir())
 config = ExperimentLab.record_algorithm!(store, algorithm)

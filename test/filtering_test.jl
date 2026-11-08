@@ -1,3 +1,4 @@
+using PMPSLab: SVDInitialization
 import Random
 
 function cdl_partition(cell::AbstractTensorCell)
@@ -59,7 +60,7 @@ end
     @test events[2].bonds_before == ntuple(_ -> 4, 8)
     @test sort(collect(events[2].bonds_after)) == [2,2,2,2,4,4,4,4]
     @test events[2].duration >= 0
-    @test count(e -> e isa MPSSplitLab.SplitProgress, events) == 16
+    @test count(e -> e isa PMPSLab.SplitProgress, events) == 16
 
     # The same SVD initialization without lattice filtering leaves a CDL.
     control = renormalize(cell, cdl_filter_algorithm(filtering=false, sweeps=0, steps=1))
@@ -80,8 +81,8 @@ end
         resumed = fetch(start_run(LoopTNRLab.tnr_steps(restored); threaded=false,
             onstep=(_, event) -> push!(remaining, event)))
         @test map(typeof, remaining) == map(typeof, events[i+1:end])
-        @test [e.site for e in remaining if e isa MPSSplitLab.SplitProgress] ==
-            [e.site for e in events[i+1:end] if e isa MPSSplitLab.SplitProgress]
+        @test [e.site for e in remaining if e isa PMPSLab.SplitProgress] ==
+            [e.site for e in events[i+1:end] if e isa PMPSLab.SplitProgress]
         @test all(a ≈ b for (a,b) in zip(resumed.cell, result.cell))
     end
 end

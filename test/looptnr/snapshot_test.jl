@@ -1,5 +1,6 @@
+using PMPSLab: NuclearNorm
 @testset "Snapshots resume every boundary without replaying events" begin
-    for regularization in (MPSSplitLab.NoRegularization(), NuclearNorm())
+    for regularization in (PMPSLab.NoRegularization(), NuclearNorm())
         state = LoopTNRLab.initialize_tnr(scalar_cell(), small_algorithm(; regularization))
         snapshots = LoopTNRLab.TNRSnapshot[ExperimentLab.copy_state(state)]
         events = Tuple{Symbol,Int,Int}[]

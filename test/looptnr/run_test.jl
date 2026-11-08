@@ -1,3 +1,4 @@
+using PMPSLab: SVDInitialization, NuclearNorm
 @testset "RG 0 copies and normalizes each cell representation" begin
     gate = set_gate_norm!(normalization_gate(), 4.0)
     for cell in (UniformGates(gate), CheckerboardGates(gate, gate),
@@ -24,7 +25,7 @@ end
     expected = PlaquetteGates(cell)
     normalize!(expected, algorithm.normalization)
     for _ in 1:2
-        optimized = MPSSplitLab.split(PeriodicMPS(expected), split)
+        optimized = PMPSLab.split(PeriodicMPS(expected), split)
         expected = PlaquetteGates(LoopTNRLab._coarse_grain(optimized.mps))
         normalize!(expected, algorithm.normalization)
     end
@@ -36,13 +37,13 @@ end
 end
 
 @testset "Direct child generator yields every site; Session controls pauses" begin
-    for regularization in (MPSSplitLab.NoRegularization(), NuclearNorm())
+    for regularization in (PMPSLab.NoRegularization(), NuclearNorm())
         state = LoopTNRLab.initialize_tnr(scalar_cell(), small_algorithm(; regularization))
         events = Tuple{Symbol,Int,Int}[]
         session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
             onstep=(session, event) -> begin
                 push!(events, signature(event, state))
-                event isa MPSSplitLab.SplitProgress && state.completed_rg == 0 &&
+                event isa PMPSLab.SplitProgress && state.completed_rg == 0 &&
                     event.site == 4 && pause!(session)
             end)
         @test timedwait(() -> run_status(session) == ExperimentLab.PAUSED, 20) == :ok
@@ -61,7 +62,7 @@ end
 @testset "Cancellation and failures belong to Session" begin
     state = LoopTNRLab.initialize_tnr(scalar_cell(), small_algorithm())
     session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
-        onstep=(session, event) -> event isa MPSSplitLab.SplitProgress && cancel!(session))
+        onstep=(session, event) -> event isa PMPSLab.SplitProgress && cancel!(session))
     wait(session)
     @test run_status(session) == ExperimentLab.CANCELLED
     @test state.active_split.progress.completed_updates == 1

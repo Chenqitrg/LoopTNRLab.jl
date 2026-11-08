@@ -1,7 +1,8 @@
 # Run from LoopTNRLab: julia --project=. examples/05_entanglement_filtering.jl
-using LoopTNRLab, PMPSLab, MPSSplitLab, TensorKit
+using PMPSLab: SVDInitialization
+using LoopTNRLab, PMPSLab, TensorKit
 using ExperimentLab, Test
-import UpdateLab, TensorLinearSolveLab
+import LatticeIteratorLab, TensorLinearSolveLab
 
 # Each gate leg contains two corner lines: dimension 2 × 2 = 4.
 corner = TensorMap([1.0 0; 0 0.3], ℂ^2 ← ℂ^2)
@@ -27,7 +28,7 @@ end
 algorithm = LoopTNR(max_rg_steps=2, filtering=filtering,
     split=ALSSplit(
         initialization=SVDInitialization(trunc=truncerror(rtol=1e-12)),
-        sweep=UpdateLab.CircularSweep(max_sweeps=1),
+        sweep=LatticeIteratorLab.CircularSweep(max_sweeps=1),
         solver=TensorLinearSolveLab.CholeskySolve()))
 store = DataStore(mktempdir())
 config = ExperimentLab.record_algorithm!(store, algorithm)

@@ -3,9 +3,9 @@ mutable struct LoopTNRState{A<:LoopTNR,C<:PlaquetteGates}
     algorithm::A
     cell::C
     completed_rg::Int
-    # Absent between RG steps. MPSSplitLab owns the concrete numerical workspace;
+    # Absent between RG steps. PMPSLab owns the concrete numerical workspace;
     # its generator and the contraction below specialize at their call boundaries.
-    active_split::Union{Nothing,MPSSplitLab.AbstractSplitState}
+    active_split::Union{Nothing,PMPSLab.AbstractSplitState}
 end
 
 """Copy the input cell; RG 0 normalization has not run yet."""
@@ -40,7 +40,7 @@ end
 function _begin_rg!(state::LoopTNRState)
     policy = state.algorithm.filtering
     if isnothing(policy)
-        state.active_split = MPSSplitLab.initialize_split(
+        state.active_split = PMPSLab.initialize_split(
             PeriodicMPS(state.cell; copy=false), state.algorithm.split)
         return nothing
     end
@@ -49,7 +49,7 @@ function _begin_rg!(state::LoopTNRState)
     filtered = filter_entanglement(state.cell, policy)
     progress = FilteringProgress(state.completed_rg + 1, before,
         _cell_bond_dimensions(filtered.cell), filtered.relative_error, time() - started)
-    split = MPSSplitLab.initialize_split(
+    split = PMPSLab.initialize_split(
         PeriodicMPS(filtered.cell; copy=false), state.algorithm.split)
     state.cell = filtered.cell
     state.active_split = split

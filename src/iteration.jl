@@ -54,7 +54,7 @@ its own events. Returns (cell, completed_rg), without accumulating histories.
                 @yield filtering
             end
         end
-        result = @yieldfrom MPSSplitLab.split_steps(something(state.active_split))
+        result = @yieldfrom PMPSLab.split_steps(something(state.active_split))
         @nosave progress = _finish_rg!(state, result.mps)
         result = nothing
         _log_rg(progress)

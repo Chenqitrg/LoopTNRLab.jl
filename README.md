@@ -1,6 +1,6 @@
 # LoopTNRLab
 
-Loop tensor-network renormalization built from MPSSplitLab and ExperimentLab.
+Loop tensor-network renormalization built from PMPSLab and ExperimentLab.
 LoopTNRLab owns square-lattice tensor cells, their conversion to periodic MPS,
 lattice entanglement filtering, coarse-graining contractions, normalization and the numerical state needed to
 continue RG. It does not keep execution status, log histories or measurement histories.
@@ -8,7 +8,7 @@ continue RG. It does not keep execution status, log histories or measurement his
 ## Run a calculation
 
 ```julia
-using LoopTNRLab, MPSSplitLab, UpdateLab, TensorLinearSolveLab, TensorKit
+using LoopTNRLab, PMPSLab, LatticeIteratorLab, TensorLinearSolveLab, TensorKit
 
 cell = UniformGates(ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1))
 algorithm = LoopTNR(max_rg_steps=1,
@@ -23,10 +23,10 @@ copied. RG 0 normalizes the initial cell; each later RG filters the current plaq
 contracts the eight-site MPS into a new cell and normalizes it.
 `default_looptnr(max_rg_steps=..., dcut=...)` supplies the standard SVD/gauge/ALS
 settings. Set `filtering=nothing` to disable lattice filtering independently of
-the initialization gauge. Add `regularization=NuclearNorm(...)` to the nested ALSSplit when wanted.
+the initialization gauge. Add `regularization=PMPSLab.NuclearNorm(...)` to the nested ALSSplit when wanted.
 Configuration JSON identifies the root and its nested Lab policies automatically.
 
-`LoopTNR.split` accepts any `MPSSplitLab.AbstractSplit`. ALS is the default preset,
+`LoopTNR.split` accepts any `PMPSLab.AbstractSplit`. ALS is the default preset,
 not a requirement of RG. A split implementation supplies `initialize_split`,
 `split_steps`, and snapshot restoration; its generator returns a result containing
 `mps`. LoopTNR forwards that implementation's own progress events and contracts
@@ -73,7 +73,7 @@ using ExperimentLab
 state = LoopTNRLab.initialize_tnr(cell, algorithm)
 session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
     onstep=(session, progress) -> begin
-        if progress isa MPSSplitLab.SplitProgress && progress.site == 3
+        if progress isa PMPSLab.SplitProgress && progress.site == 3
             pause!(session)
         end
     end)
@@ -81,7 +81,7 @@ session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
 # fetch(session) waits for completion, including across pauses.
 ```
 
-The generator directly delegates to `MPSSplitLab.split_steps` with `@yieldfrom`.
+The generator directly delegates to `PMPSLab.split_steps` with `@yieldfrom`.
 It yields the split algorithm's original events (`SplitProgress` after each ALS
 site update), `LoopTNRLab.FilteringProgress` before the first site, and `LoopTNRLab.RGProgress` after each committed RG boundary.
 There is no second scheduler or phase enum.
@@ -113,7 +113,7 @@ At an acknowledged pause or inside `onstep`, `capture(ref, state)` copies only:
 - The current cell and algorithm configuration. During an active split this cell
   has already been filtered; restoration does not filter it again.
 - The completed RG count (`-1` means initial normalization is pending).
-- An active MPSSplitLab snapshot, if paused inside a split.
+- An active PMPSLab snapshot, if paused inside a split.
 
 The snapshot contains no Task, generator, cache or diagnostic history. The split
 target is reconstructed from the committed cell, rather than stored a second time.

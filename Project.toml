@@ -6,29 +6,27 @@ authors = []
 [deps]
 ResumableFunctions = "c5292f4c-5179-55e1-98c5-05642aab7184"
 Configurations = "5218b696-f38b-4ac9-8b61-a12ec717816d"
-UpdateLab = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
+LatticeIteratorLab = "fe9b439f-8eb6-4306-8b6e-a4fd64b7a696"
 TensorLinearSolveLab = "1edcf5f3-8d72-4caf-b59c-7140f702ee01"
 PMPSLab = "671cd7e2-a4a1-40fd-ad7d-501014e12597"
 ExperimentLab = "29f77e63-5c80-4c5a-8fc3-cbf639322b6d"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
-MPSSplitLab = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 TensorKit = "07d1fe3e-3e46-537d-9eac-e9e13d0d4cec"
 
 [sources]
-UpdateLab = {path = "../UpdateLab"}
+LatticeIteratorLab = {path = "../LatticeIteratorLab"}
 TensorLinearSolveLab = {path = "../TensorLinearSolveLab"}
 PMPSLab = {path = "../PMPSLab"}
 ExperimentLab = {path = "../ExperimentLab"}
 PeriodicProductsLab = {path = "../PeriodicProductsLab"}
-MPSSplitLab = {path = "../MPSSplitLab"}
 
 [compat]
 ResumableFunctions = "1.0.8"
 Configurations = "0.17.6"
 Accessors = "0.1.44"
-UpdateLab = "0.1"
+LatticeIteratorLab = "0.1"
 TensorLinearSolveLab = "0.1"
 PMPSLab = "0.1"
 ExperimentLab = "0.1"
@@ -38,7 +36,6 @@ CategoryData = "0.4"
 JLD2 = "0.6"
 LinearAlgebra = "1.12"
 Logging = "1.11"
-MPSSplitLab = "0.1"
 Random = "1.11"
 TensorKit = "0.17.1"
 

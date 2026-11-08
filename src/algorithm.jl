@@ -12,7 +12,7 @@ callback; they are independent of the tensors required for the next RG step.
 `filtering` acts on the lattice before each split; set it to `nothing` to disable
 that stage. It is independent of the split initialization's gauge policy.
 """
-Configurations.@option struct LoopTNR{S<:MPSSplitLab.AbstractSplit,N<:AbstractNormalization,F<:Union{Nothing,PMPSLab.ProjectorGaugeFix}} <: ExperimentLab.AbstractAlgorithmConfig
+Configurations.@option struct LoopTNR{S<:PMPSLab.AbstractSplit,N<:AbstractNormalization,F<:Union{Nothing,PMPSLab.ProjectorGaugeFix}} <: ExperimentLab.AbstractAlgorithmConfig
     split::S
     max_rg_steps::Int
     normalization::N = InfinityNormNormalization()
@@ -47,21 +47,21 @@ function default_looptnr(; max_rg_steps::Integer, dcut::Integer)
     ├─ filtering: PMPSLab.ProjectorGaugeFix
     │  ├─ tol: 1.0e-13
     │  └─ trunc: numerical_truncation
-    └─ split: MPSSplitLab.ALSSplit
-       ├─ initialization: MPSSplitLab.GaugeInitialization
-       │  ├─ initialization: MPSSplitLab.SVDInitialization
+    └─ split: PMPSLab.ALSSplit
+       ├─ initialization: PMPSLab.GaugeInitialization
+       │  ├─ initialization: PMPSLab.SVDInitialization
        │  │  └─ trunc: truncrank(preliminary_rank) & numerical_truncation
        │  └─ gauge_fix: PMPSLab.ProjectorGaugeFix
        │     ├─ tol: 1.0e-13
        │     ├─ maxiter: 100
        │     └─ trunc: truncrank(dcut) & numerical_truncation
-       ├─ sweep: UpdateLab.CircularSweep
+       ├─ sweep: LatticeIteratorLab.CircularSweep
        │  └─ max_sweeps: 40
        ├─ solver: TensorLinearSolveLab.LDLTSolve()
-       ├─ environments: MPSSplitLab.SplitEnvironmentPolicy
+       ├─ environments: PMPSLab.SplitEnvironmentPolicy
        │  ├─ normal: PMPSLab.DenseTransferPolicy()
        │  └─ mixed: PMPSLab.DenseTransferPolicy()
-       └─ stopping: MPSSplitLab.CostTolerance
+       └─ stopping: PMPSLab.CostTolerance
           ├─ atol: 1.0e-9
           ├─ rtol: 1.0e-2
           └─ min_sweeps: 5
@@ -73,7 +73,7 @@ const CONFIG_REGISTRY = ExperimentLab.ConfigRegistry(
         "LoopTNRLab.LoopTNR" => LoopTNR,
         "LoopTNRLab.InfinityNormNormalization" => InfinityNormNormalization,
     ),
-    ExperimentLab.config_registry(MPSSplitLab.AbstractSplit),
+    ExperimentLab.config_registry(PMPSLab.AbstractSplit),
 )
 ExperimentLab.config_registry(::Type{<:LoopTNR}) = CONFIG_REGISTRY
 ExperimentLab.config_registry(::Type{InfinityNormNormalization}) = CONFIG_REGISTRY

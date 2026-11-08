@@ -1,15 +1,16 @@
+using PMPSLab: SVDInitialization
 using Configurations: @option
 using ResumableFunctions: ResumableFunctions, @resumable, @yield
-import MPSSplitLab: split_steps
+import PMPSLab: split_steps
 
 # A real non-ALS factorization, with no ALS workspace/progress/snapshot fields.
-@option struct DirectSVDSplit <: MPSSplitLab.AbstractSplit
+@option struct DirectSVDSplit <: PMPSLab.AbstractSplit
     rank::Int = 2
 end
 ExperimentLab.config_registry(::Type{DirectSVDSplit}) =
     ExperimentLab.ConfigRegistry("test.DirectSVDSplit" => DirectSVDSplit)
 
-mutable struct DirectSVDState{M} <: MPSSplitLab.AbstractSplitState
+mutable struct DirectSVDState{M} <: PMPSLab.AbstractSplitState
     policy::DirectSVDSplit
     factors::M
     emitted::Bool
@@ -24,7 +25,7 @@ function log_svd(event::SVDCompleted)
     @info "SVD factorization completed" fields...
 end
 
-function MPSSplitLab.initialize_split(target::PeriodicMPS, policy::DirectSVDSplit)
+function PMPSLab.initialize_split(target::PeriodicMPS, policy::DirectSVDSplit)
     factors = initial_approximation(target, SVDInitialization(trunc=truncrank(policy.rank)))
     return DirectSVDState(policy, factors, false)
 end
@@ -40,7 +41,7 @@ end
 end
 
 # ExperimentLab's default copy_state already deep-copies this cache-free state.
-function MPSSplitLab.restore_split(saved::DirectSVDState, target::PeriodicMPS;
+function PMPSLab.restore_split(saved::DirectSVDState, target::PeriodicMPS;
         algorithm::DirectSVDSplit=saved.policy)
     algorithm == saved.policy || throw(ArgumentError("split configuration mismatch"))
     length(saved.factors) == 2length(target) || throw(DimensionMismatch("split site count"))
@@ -55,7 +56,7 @@ end
     seekstart(io)
     @test isequal(readconfig(io, typeof(algorithm)), algorithm)
     target = PeriodicMPS(cell)
-    @test keys(MPSSplitLab.split(target, algorithm.split)) == (:mps,)
+    @test keys(PMPSLab.split(target, algorithm.split)) == (:mps,)
 
     mktempdir() do path
         store = DataStore(path)
