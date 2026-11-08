@@ -14,7 +14,7 @@ result = renormalize(cell, algorithm)
 # The same computation can pause after any nested split site. LoopTNR forwards
 # PMPSLab.SplitProgress unchanged; ExperimentLab controls the Session.
 state = LoopTNRLab.initialize_tnr(cell, algorithm)
-session = ExperimentLab.start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+session = ExperimentLab.start_run(ExperimentLab.algorithm_steps(state); threaded=false,
     onstep=(session, progress) -> begin
         if progress isa PMPSLab.SplitProgress && progress.site == 3
             ExperimentLab.pause!(session)

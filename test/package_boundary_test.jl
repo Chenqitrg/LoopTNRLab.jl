@@ -2,6 +2,9 @@
     @test parentmodule(LoopTNR) === LoopTNRLab
     @test parentmodule(PlaquetteGates) === LoopTNRLab
     @test parentmodule(ExperimentLab.Session) === ExperimentLab
+    @test LoopTNRLab.LoopTNRState <: ExperimentLab.AbstractAlgorithmState
+    @test parentmodule(ExperimentLab.algorithm_steps) === ExperimentLab
+    @test !isdefined(LoopTNRLab, :tnr_steps)
     for name in (:LoopTNRPhase, :LoopTNRRun, :LoopTNRResult, :LoopTNRLog,
                  :RGLog, :TNRMeasurement, :NoFixedPointMeasurement, :step!, :isfinished)
         @test !isdefined(LoopTNRLab, name)

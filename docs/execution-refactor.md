@@ -13,7 +13,7 @@ no compatibility layer: no production data or applications require the old API.
 | Log files, state/snapshot references and measurement history | ExperimentLab DataStore |
 | Which measurements/snapshots to retain | Application callback |
 
-The outer generator uses `@yieldfrom PMPSLab.split_steps(...)`. It forwards
+The outer generator uses `@yieldfrom ExperimentLab.algorithm_steps(...)`. It forwards
 the original SplitProgress values and adds an RGProgress only after a committed
 normalization/coarse-graining boundary. No second phase enum or stepping protocol
 is required. Each package records its own events in the current execution log.

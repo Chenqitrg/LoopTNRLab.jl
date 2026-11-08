@@ -32,7 +32,7 @@ function _log_rg(progress::RGProgress)
 end
 
 """
-    tnr_steps(state)
+    algorithm_steps(state)
 
 Yield FilteringProgress before each split and RGProgress after normalization
 (including RG 0), and forward the split
@@ -40,7 +40,7 @@ algorithm's own events unchanged. ExperimentLab owns pause/cancel/failure status
 At a split boundary the current RG is state.completed_rg + 1. Each package logs
 its own events. Returns (cell, completed_rg), without accumulating histories.
 """
-@resumable function tnr_steps(state::LoopTNRState)::ExperimentLab.AbstractLogEvent
+@resumable function algorithm_steps(state::LoopTNRState)::ExperimentLab.AbstractLogEvent
     if state.completed_rg == -1
         @nosave progress = _commit_rg!(state, copy(state.cell), 0, time())
         _log_rg(progress)
@@ -54,7 +54,7 @@ its own events. Returns (cell, completed_rg), without accumulating histories.
                 @yield filtering
             end
         end
-        result = @yieldfrom PMPSLab.split_steps(something(state.active_split))
+        result = @yieldfrom ExperimentLab.algorithm_steps(something(state.active_split))
         @nosave progress = _finish_rg!(state, result.mps)
         result = nothing
         _log_rg(progress)
@@ -65,4 +65,4 @@ end
 
 """Run to completion using ExperimentLab. The input cell is copied."""
 renormalize(cell::AbstractTensorCell, algorithm::LoopTNR) =
-    fetch(ExperimentLab.start_run(tnr_steps(initialize_tnr(cell, algorithm)); threaded=false))
+    fetch(ExperimentLab.start_run(algorithm_steps(initialize_tnr(cell, algorithm)); threaded=false))

@@ -1,5 +1,5 @@
 """Current numerical state, without tasks, logs or measurement history."""
-mutable struct LoopTNRState{A<:LoopTNR,C<:PlaquetteGates}
+mutable struct LoopTNRState{A<:LoopTNR,C<:PlaquetteGates} <: ExperimentLab.AbstractAlgorithmState
     algorithm::A
     cell::C
     completed_rg::Int

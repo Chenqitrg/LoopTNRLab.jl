@@ -40,7 +40,7 @@ end
     for regularization in (PMPSLab.NoRegularization(), NuclearNorm())
         state = LoopTNRLab.initialize_tnr(scalar_cell(), small_algorithm(; regularization))
         events = Tuple{Symbol,Int,Int}[]
-        session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+        session = start_run(ExperimentLab.algorithm_steps(state); threaded=false,
             onstep=(session, event) -> begin
                 push!(events, signature(event, state))
                 event isa PMPSLab.SplitProgress && state.completed_rg == 0 &&
@@ -61,7 +61,7 @@ end
 
 @testset "Cancellation and failures belong to Session" begin
     state = LoopTNRLab.initialize_tnr(scalar_cell(), small_algorithm())
-    session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+    session = start_run(ExperimentLab.algorithm_steps(state); threaded=false,
         onstep=(session, event) -> event isa PMPSLab.SplitProgress && cancel!(session))
     wait(session)
     @test run_status(session) == ExperimentLab.CANCELLED
@@ -72,14 +72,14 @@ end
     fill!(cell.gate.data, 0)
     state = LoopTNRLab.initialize_tnr(cell, small_algorithm())
     before = copy.(collect(state.cell))
-    failed = start_run(LoopTNRLab.tnr_steps(state); threaded=false)
+    failed = start_run(ExperimentLab.algorithm_steps(state); threaded=false)
     @test_throws CapturedException fetch(failed)
     @test run_status(failed) == ExperimentLab.FAILED
     @test state.completed_rg == -1
     @test all(collect(state.cell) .== before)
 
     state = LoopTNRLab.initialize_tnr(scalar_cell(), small_algorithm())
-    failed = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+    failed = start_run(ExperimentLab.algorithm_steps(state); threaded=false,
         onstep=(_, _) -> error("callback failure"))
     @test_throws CapturedException fetch(failed)
     @test state.completed_rg == 0 # Numerical commit precedes the external callback.

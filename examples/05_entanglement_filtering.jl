@@ -33,7 +33,7 @@ algorithm = LoopTNR(max_rg_steps=2, filtering=filtering,
 store = DataStore(mktempdir())
 config = ExperimentLab.record_algorithm!(store, algorithm)
 state = LoopTNRLab.initialize_tnr(input, algorithm)
-session = start_run(store, config, LoopTNRLab.tnr_steps(state); threaded=false)
+session = start_run(store, config, ExperimentLab.algorithm_steps(state); threaded=false)
 result = fetch(session)
 @test all(dim(space(tensor, leg)) == 1 for tensor in result.cell for leg in 1:4)
 println("After two RGs: every bond has dimension 1; both CDL layers have been removed.")

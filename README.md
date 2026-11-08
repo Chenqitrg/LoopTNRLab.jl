@@ -28,7 +28,7 @@ Configuration JSON identifies the root and its nested Lab policies automatically
 
 `LoopTNR.split` accepts any `PMPSLab.AbstractSplit`. ALS is the default preset,
 not a requirement of RG. A split implementation supplies `initialize_split`,
-`split_steps`, and snapshot restoration; its generator returns a result containing
+`ExperimentLab.algorithm_steps`, and snapshot restoration; its generator returns a result containing
 `mps`. LoopTNR forwards that implementation's own progress events and contracts
 the returned MPS without inspecting optimizer-specific workspace fields.
 
@@ -67,11 +67,15 @@ check complex phases, retained loop weights, and restoration at every yield.
 
 ## Execution and progress
 
+`LoopTNRState` subtypes `ExperimentLab.AbstractAlgorithmState`. Both the RG state
+and its nested split state implement the same `ExperimentLab.algorithm_steps`
+generic; initialization and snapshot restoration remain in their owning packages.
+
 ```julia
 using ExperimentLab
 
 state = LoopTNRLab.initialize_tnr(cell, algorithm)
-session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+session = start_run(ExperimentLab.algorithm_steps(state); threaded=false,
     onstep=(session, progress) -> begin
         if progress isa PMPSLab.SplitProgress && progress.site == 3
             pause!(session)
@@ -81,7 +85,7 @@ session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
 # fetch(session) waits for completion, including across pauses.
 ```
 
-The generator directly delegates to `PMPSLab.split_steps` with `@yieldfrom`.
+The generator directly delegates to `ExperimentLab.algorithm_steps` with `@yieldfrom`.
 It yields the split algorithm's original events (`SplitProgress` after each ALS
 site update), `LoopTNRLab.FilteringProgress` before the first site, and `LoopTNRLab.RGProgress` after each committed RG boundary.
 There is no second scheduler or phase enum.
@@ -118,7 +122,7 @@ At an acknowledged pause or inside `onstep`, `capture(ref, state)` copies only:
 The snapshot contains no Task, generator, cache or diagnostic history. The split
 target is reconstructed from the committed cell, rather than stored a second time.
 After `load_snapshot`, call `LoopTNRLab.restore_tnr(saved)` and start a new
-`tnr_steps` generator. Set the new recorded execution's `initial_state` to the
+`algorithm_steps` generator. Set the new recorded execution's `initial_state` to the
 saved StateRef to link the branch. Previously completed sites and RG boundaries
 are not replayed, including a snapshot taken after the final split site.
 

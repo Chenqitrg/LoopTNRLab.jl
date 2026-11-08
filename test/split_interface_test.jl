@@ -1,7 +1,7 @@
 using PMPSLab: SVDInitialization
 using Configurations: @option
 using ResumableFunctions: ResumableFunctions, @resumable, @yield
-import PMPSLab: split_steps
+import ExperimentLab: algorithm_steps
 
 # A real non-ALS factorization, with no ALS workspace/progress/snapshot fields.
 @option struct DirectSVDSplit <: PMPSLab.AbstractSplit
@@ -30,7 +30,7 @@ function PMPSLab.initialize_split(target::PeriodicMPS, policy::DirectSVDSplit)
     return DirectSVDState(policy, factors, false)
 end
 
-@resumable function split_steps(state::DirectSVDState)::SVDCompleted
+@resumable function algorithm_steps(state::DirectSVDState)::SVDCompleted
     if !state.emitted
         state.emitted = true
         event = SVDCompleted(state.policy.rank)
@@ -49,6 +49,7 @@ function PMPSLab.restore_split(saved::DirectSVDState, target::PeriodicMPS;
 end
 
 @testset "LoopTNR delegates to a non-ALS split" begin
+    @test DirectSVDState <: ExperimentLab.AbstractAlgorithmState
     cell = UniformGates(normalization_gate())
     algorithm = LoopTNR(split=DirectSVDSplit(), max_rg_steps=2, filtering=nothing)
     io = IOBuffer()
@@ -63,7 +64,7 @@ end
         config = ExperimentLab.record_algorithm!(store, algorithm)
         state = LoopTNRLab.initialize_tnr(cell, algorithm)
         saved = Ref{ExperimentLab.SnapshotRef}()
-        session = start_run(store, config, LoopTNRLab.tnr_steps(state); threaded=false,
+        session = start_run(store, config, ExperimentLab.algorithm_steps(state); threaded=false,
             onstep=(session, event) -> begin
                 if event isa SVDCompleted && state.completed_rg == 0
                     ref = record_state!(store, session.execution; step=0)
@@ -83,7 +84,7 @@ end
         @test restored.active_split.factors[1] !== snapshot.active_split.factors[1]
         @test restored.active_split.factors[1] ≈ snapshot.active_split.factors[1]
         events = ExperimentLab.AbstractLogEvent[]
-        actual = fetch(start_run(LoopTNRLab.tnr_steps(restored); threaded=false,
+        actual = fetch(start_run(ExperimentLab.algorithm_steps(restored); threaded=false,
             onstep=(_, event) -> push!(events, event)))
         @test map(typeof, events) == [LoopTNRLab.RGProgress, SVDCompleted, LoopTNRLab.RGProgress]
         @test actual.completed_rg == expected.completed_rg == 2

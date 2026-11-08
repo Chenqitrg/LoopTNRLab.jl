@@ -22,7 +22,7 @@ store = DataStore(mktempdir())
 config = ExperimentLab.record_algorithm!(store, algorithm)
 state = LoopTNRLab.initialize_tnr(cell, algorithm)
 snapshots = ExperimentLab.SnapshotRef[]
-session = start_run(store, config, LoopTNRLab.tnr_steps(state); threaded=false,
+session = start_run(store, config, ExperimentLab.algorithm_steps(state); threaded=false,
     onstep=(session, progress) -> begin
         if progress isa LoopTNRLab.RGProgress
             ref = record_state!(store, session.execution; step=progress.rg)
@@ -41,7 +41,7 @@ println()
 # restarting numerical work neither loads nor repeats that measurement history.
 saved = first(snapshots)
 restored = LoopTNRLab.restore_tnr(load_snapshot(store, saved))
-branch = start_run(store, config, LoopTNRLab.tnr_steps(restored); threaded=false,
+branch = start_run(store, config, ExperimentLab.algorithm_steps(restored); threaded=false,
     initial_state=ExperimentLab.parent_ref(store, saved), label="restart from RG 0")
 @assert fetch(branch).completed_rg == result.completed_rg
 nothing

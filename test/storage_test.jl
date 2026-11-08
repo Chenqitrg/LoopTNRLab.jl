@@ -17,7 +17,7 @@ end
     mktempdir() do path
         store = DataStore(path)
         config = ExperimentLab.record_algorithm!(store, state.algorithm)
-        session = start_run(store, config, LoopTNRLab.tnr_steps(state); threaded=false,
+        session = start_run(store, config, ExperimentLab.algorithm_steps(state); threaded=false,
             onstep=(session, progress) -> begin
                 # The latest log must already be on disk when the callback runs.
                 log_path = joinpath(path, ExperimentLab.info(store, session.execution)["log_path"])
@@ -49,7 +49,7 @@ end
         expected = fetch(session)
 
         restored = LoopTNRLab.restore_tnr(snapshot)
-        branch = start_run(store, config, LoopTNRLab.tnr_steps(restored); threaded=false,
+        branch = start_run(store, config, ExperimentLab.algorithm_steps(restored); threaded=false,
             initial_state=saved_state, label="resumed")
         actual = fetch(branch)
         @test actual.completed_rg == expected.completed_rg == 2
@@ -91,7 +91,7 @@ end
         saved = only(ExperimentLab.records(store, :snapshot))
         state = LoopTNRLab.restore_tnr(load_snapshot(store, saved))
         sites = Int[]
-        result = fetch(start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+        result = fetch(start_run(ExperimentLab.algorithm_steps(state); threaded=false,
             onstep=(_, event) -> event isa LoopTNRLab.RGProgress || push!(sites, event.site)))
         @assert first(sites) == 5
         @assert result.completed_rg == 2

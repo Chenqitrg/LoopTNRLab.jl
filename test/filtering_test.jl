@@ -50,7 +50,7 @@ end
     state = LoopTNRLab.initialize_tnr(cell, algorithm)
     saved = LoopTNRLab.TNRSnapshot[]
     events = ExperimentLab.AbstractLogEvent[]
-    result = fetch(start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+    result = fetch(start_run(ExperimentLab.algorithm_steps(state); threaded=false,
         onstep=(_, event) -> begin
             push!(events, event)
             push!(saved, ExperimentLab.copy_state(state))
@@ -78,7 +78,7 @@ end
     for (i, snapshot) in enumerate(saved)
         restored = LoopTNRLab.restore_tnr(snapshot)
         remaining = ExperimentLab.AbstractLogEvent[]
-        resumed = fetch(start_run(LoopTNRLab.tnr_steps(restored); threaded=false,
+        resumed = fetch(start_run(ExperimentLab.algorithm_steps(restored); threaded=false,
             onstep=(_, event) -> push!(remaining, event)))
         @test map(typeof, remaining) == map(typeof, events[i+1:end])
         @test [e.site for e in remaining if e isa PMPSLab.SplitProgress] ==
@@ -95,7 +95,7 @@ end
         config = ExperimentLab.record_algorithm!(store, algorithm)
         state = LoopTNRLab.initialize_tnr(cell, algorithm)
         saved = Ref{ExperimentLab.SnapshotRef}()
-        session = start_run(store, config, LoopTNRLab.tnr_steps(state); threaded=false,
+        session = start_run(store, config, ExperimentLab.algorithm_steps(state); threaded=false,
             onstep=(session, event) -> begin
                 if event isa LoopTNRLab.FilteringProgress && event.rg == 1
                     ref = record_state!(store, session.execution; step=0, metadata=(; stage="filtered", rg=1))
@@ -119,7 +119,7 @@ end
         resume!(session)
         expected = fetch(session)
         restored = LoopTNRLab.restore_tnr(snapshot)
-        branch = start_run(store, config, LoopTNRLab.tnr_steps(restored); threaded=false,
+        branch = start_run(store, config, ExperimentLab.algorithm_steps(restored); threaded=false,
             initial_state=ExperimentLab.parent_ref(store, saved[]))
         actual = fetch(branch)
         @test all(a ≈ b for (a,b) in zip(actual.cell,expected.cell))

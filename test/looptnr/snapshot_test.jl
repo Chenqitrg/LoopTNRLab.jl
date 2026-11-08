@@ -4,7 +4,7 @@ using PMPSLab: NuclearNorm
         state = LoopTNRLab.initialize_tnr(scalar_cell(), small_algorithm(; regularization))
         snapshots = LoopTNRLab.TNRSnapshot[ExperimentLab.copy_state(state)]
         events = Tuple{Symbol,Int,Int}[]
-        expected = fetch(start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+        expected = fetch(start_run(ExperimentLab.algorithm_steps(state); threaded=false,
             onstep=(_, event) -> begin
                 push!(events, signature(event, state))
                 push!(snapshots, ExperimentLab.copy_state(state))

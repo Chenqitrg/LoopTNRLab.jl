@@ -3,6 +3,7 @@ module LoopTNRLab
 using TensorKit, LinearAlgebra
 using ResumableFunctions: ResumableFunctions, @resumable, @yield, @yieldfrom, @nosave
 import Configurations, ExperimentLab, PMPSLab, Random
+import ExperimentLab: algorithm_steps
 import TensorLinearSolveLab, LatticeIteratorLab
 import PMPSLab: PeriodicMPS, assertconsistency, standardize
 
@@ -12,7 +13,7 @@ export cdl_tensor, random_cdl_tensor
 export LoopTNR, default_looptnr, renormalize, InfinityNormNormalization
 public AbstractNormalization, RGProgress, FilteringProgress
 public filter_entanglement
-public LoopTNRState, TNRSnapshot, initialize_tnr, tnr_steps, restore_tnr
+public LoopTNRState, TNRSnapshot, initialize_tnr, restore_tnr
 
 include("tensorcell/container.jl")
 include("tensorcell/constructors.jl")

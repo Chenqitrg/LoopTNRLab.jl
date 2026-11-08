@@ -10,7 +10,7 @@ signature(event::PMPSLab.SplitProgress, state) = (:site, state.completed_rg + 1,
 
 function finish_tnr(state)
     events = Tuple{Symbol,Int,Int}[]
-    result = fetch(start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+    result = fetch(start_run(ExperimentLab.algorithm_steps(state); threaded=false,
         onstep=(_, event) -> push!(events, signature(event, state))))
     return result, events
 end
