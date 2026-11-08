@@ -1,227 +1,153 @@
 # LoopTNRLab
 
-Loop tensor-network renormalization built on [MPSSplitLab](../MPSSplitLab) and [PMPSLab](../PMPSLab).
-LoopTNRLab owns square-lattice tensor cells, plaquette-to-MPS conversion,
-coarse graining, RG normalization, measurements, and the outer RG run.
-PMPSLab owns periodic MPS data; MPSSplitLab owns splitting optimization; [ExecutionLab](../ExecutionLab) owns
-generic run control and checkpoint storage.
+Loop tensor-network renormalization built from MPSSplitLab and ExperimentLab.
+LoopTNRLab owns square-lattice tensor cells, their conversion to periodic MPS,
+lattice entanglement filtering, coarse-graining contractions, normalization and the numerical state needed to
+continue RG. It does not keep execution status, log histories or measurement histories.
 
-## Local setup
+## Run a calculation
 
-Keep the packages as siblings:
+```julia
+using LoopTNRLab, MPSSplitLab, UpdateLab, TensorLinearSolveLab, TensorKit
 
-```text
-GitHub/
-├── ExecutionLab/
-├── PMPSLab/
-├── MPSSplitLab/
-├── ExperimentLab/
-├── PeriodicProductsLab/
-├── UpdateLab/
-├── TensorLinearSolveLab/
-├── TransferMatricesLab/
-├── TransferEnvironmentsLab/
-├── GaugeFixingLab/
-└── LoopTNRLab/
+cell = UniformGates(ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1))
+algorithm = LoopTNR(max_rg_steps=1,
+    split=ALSSplit(sweep=CircularSweep(max_sweeps=1), solver=CholeskySolve()))
+result = renormalize(cell, algorithm)
+result.cell
+result.completed_rg
 ```
 
-From the LoopTNRLab directory:
+This scalar example demonstrates the workflow, not a physical model. The input is
+copied. RG 0 normalizes the initial cell; each later RG filters the current plaquette's inner loop, optimizes its split,
+contracts the eight-site MPS into a new cell and normalizes it.
+`default_looptnr(max_rg_steps=..., dcut=...)` supplies the standard SVD/gauge/ALS
+settings. Set `filtering=nothing` to disable lattice filtering independently of
+the initialization gauge. Add `regularization=NuclearNorm(...)` to the nested ALSSplit when wanted.
+Configuration JSON identifies the root and its nested Lab policies automatically.
+
+`LoopTNR.split` accepts any `MPSSplitLab.AbstractSplit`. ALS is the default preset,
+not a requirement of RG. A split implementation supplies `initialize_split`,
+`split_steps`, and snapshot restoration; its generator returns a result containing
+`mps`. LoopTNR forwards that implementation's own progress events and contracts
+the returned MPS without inspecting optimizer-specific workspace fields.
+
+For a corner-double-line input, use `cdl_tensor(corner)` or
+`cdl_tensor(northwest, northeast, southeast, southwest)` with TensorKit corner maps.
+`random_cdl_tensor(ComplexF64, 2)` generates four random corners with line dimension
+2, giving gate-leg dimension 4. Wrap the returned tensor in `UniformGates` to run
+RG. See [the CDL example](examples/04_cdl_tensor.jl) for explicit and random inputs.
+
+## Entanglement filtering
+
+`algorithm.filtering` is a PMPSLab `ProjectorGaugeFix`. It filters the inner
+virtual loop of the current four-site plaquette and leaves its eight outer
+physical legs unchanged. It does not immediately filter a translated plaquette.
+Remaining outer CDL structure is handled by the next RG's plaquette grouping.
+The eight-site split initialization has its own, separate gauge policy.
+
+`LoopTNRLab.filter_entanglement(cell, algorithm.filtering)` returns the filtered
+cell and a local relative error. It keeps the finite-loop amplitude, including
+complex phase, by multiplying the filtered plaquette by
+`dot(filtered, original) / dot(filtered, filtered)`. These overlaps use PMPSLab
+transfer contractions, not a dense eight-physical-leg state. The factor is
+absorbed into a tensor and subsequently handled by the existing RG normalization.
+A general truncation can change the state beyond a scalar; the reported residual
+measures that change and is limited by overlap-subtraction roundoff.
+
+For a nondegenerate diagonal CDL corner `diag(1, 0.3)`, the first filter reduces
+inner bonds from 4 to 2 while leaving outer legs at 4. The first RG produces
+bond dimension 2; the second RG reaches dimension 1. In this diagonal example,
+the second filter leaves bond dimensions unchanged; the subsequent SVD and
+coarse graining finish the reduction. Repeating the filter on the same plaquette is
+numerically idempotent, rather than continuing to remove the outer structure.
+Equal dominant corner eigenvalues need not compress. See [the physical test
+and JSON example](examples/05_entanglement_filtering.jl). Standard tests also
+check complex phases, retained loop weights, and restoration at every yield.
+
+## Execution and progress
+
+```julia
+using ExperimentLab
+
+state = LoopTNRLab.initialize_tnr(cell, algorithm)
+session = start_run(LoopTNRLab.tnr_steps(state); threaded=false,
+    onstep=(session, progress) -> begin
+        if progress isa MPSSplitLab.SplitProgress && progress.site == 3
+            pause!(session)
+        end
+    end)
+# After the Session reports PAUSED, inspect state and then resume!(session).
+# fetch(session) waits for completion, including across pauses.
+```
+
+The generator directly delegates to `MPSSplitLab.split_steps` with `@yieldfrom`.
+It yields the split algorithm's original events (`SplitProgress` after each ALS
+site update), `LoopTNRLab.FilteringProgress` before the first site, and `LoopTNRLab.RGProgress` after each committed RG boundary.
+There is no second scheduler or phase enum.
+During a split, the RG being computed is `state.completed_rg + 1`.
+ExperimentLab owns pause, resume, cancellation, failure and final result handling.
+
+## Stored data and logs
+
+Use `start_run(store, config_ref, generator; onstep=...)` for a recorded execution.
+Its JSONL log contains each site's `mps.split.update.v1` event once, alongside
+`looptnr.filtering.completed.v1` events containing RG index, bond dimensions,
+the local residual and filtering duration, and `looptnr.rg.completed.v1` events containing `rg`, `scale`, `log_scale`, and `duration`.
+Each package records its own fields; split events contain no RG context.
+The site `duration` is the local numerical update time; the RG `duration` covers
+coarse graining and normalization, excluding the split and external callbacks.
+ExperimentLab binds ownership and flushes messages before the callback runs.
+
+Measurements are independent of the numerical algorithm. Define an
+`ExperimentLab.AbstractMeasurement` and `ExperimentLab.measure` method, then call
+`measure!(store, definition, state.cell; state=ref)` in the RG callback. Results,
+measurement configuration and measurement logs are linked by ExperimentLab.
+Choose what to measure/save in that callback; no history is retained by LoopTNR.
+The [recorded example](examples/03_recorded_run.jl) shows the complete flow.
+
+## Restart
+
+At an acknowledged pause or inside `onstep`, `capture(ref, state)` copies only:
+
+- The current cell and algorithm configuration. During an active split this cell
+  has already been filtered; restoration does not filter it again.
+- The completed RG count (`-1` means initial normalization is pending).
+- An active MPSSplitLab snapshot, if paused inside a split.
+
+The snapshot contains no Task, generator, cache or diagnostic history. The split
+target is reconstructed from the committed cell, rather than stored a second time.
+After `load_snapshot`, call `LoopTNRLab.restore_tnr(saved)` and start a new
+`tnr_steps` generator. Set the new recorded execution's `initial_state` to the
+saved StateRef to link the branch. Previously completed sites and RG boundaries
+are not replayed, including a snapshot taken after the final split site.
+
+## Review order
+
+1. [Configuration](examples/01_configuration_tree.jl).
+2. [Run and pause](examples/02_run_and_pause.jl).
+3. [Record, measure and restart](examples/03_recorded_run.jl).
+4. [CDL tensors](examples/04_cdl_tensor.jl).
+5. [Entanglement filtering and JSON logs](examples/05_entanglement_filtering.jl).
+5. [iteration.jl](src/iteration.jl): the entire RG execution sequence.
+6. [state.jl](src/state.jl) and [snapshot.jl](src/snapshot.jl): numerical commit and restart data.
+7. [contractions.jl](src/contractions.jl): tensor layout and coarse graining.
+
+`tensorcell/` contains the lattice containers, constructors and displays;
+`algorithm.jl` defines settings and their JSON names; `normalization.jl` implements
+normalization. Scientific tensor kernels and their space checks remain explicit.
+
+## Local setup and tests
+
+Keep the tensor Lab packages and ExperimentLab as sibling directories. Julia 1.12
+or later is required. From this directory:
 
 ```sh
 julia --project=. -e 'using Pkg; Pkg.instantiate()'
-julia --project=.
+OPENBLAS_NUM_THREADS=1 JULIA_NUM_THREADS=1 julia --project=. -e 'using Pkg; Pkg.test(; julia_args=["-O0", "--threads=1"])'
 ```
 
-Relative sources resolve the sibling packages. All local package versions remain
-`0.1.0`; Julia 1.12 or later is required. Import each API from its owning package.
-
-```julia
-using LoopTNRLab
-using PMPSLab
-using MPSSplitLab
-using UpdateLab
-using TensorLinearSolveLab
-using Accessors: @set, @reset
-using ExecutionLab
-using ExecutionLab: initialize_run, LocalRunSession, start_run!
-using TensorKit
-
-gate_space = ℂ^2 ⊗ ℂ^2 ← ℂ^2 ⊗ ℂ^2
-gates = rand(UniformGates, ComplexF64, gate_space)
-```
-
-## Run LoopTNR
-
-`LoopTNR` repeatedly turns a tensor cell into its designed eight-site split
-problem, optimizes that split, coarse-grains it back to a tensor cell, and then
-normalizes and measures the new RG boundary. The blocking API returns a named
-result rather than a tuple. All accepted input cell layouts are copied into a
-canonical `PlaquetteGates`; run, snapshot, and result cells therefore always
-use that representation:
-
-```julia
-tnr = default_looptnr(; max_rg_steps=2, dcut=8)
-result = renormalize(gates, tnr)
-
-@show result.cell
-@show length(result.measurement_results)  # RG 0, 1, and 2
-@show length(result.log.rg_logs)
-```
-
-The default uses an eight-site circular ALS split with at most 40 sweeps,
-dense normal and mixed environments, an LDLT local solve, and a periodic-gauge
-initialization. Its preliminary SVD retains at most `2dcut` states before projector
- gauge fixing reduces the universal bond dimension to `dcut`. After five
-complete sweeps it stops when both `abs(cost) < 1e-9` and the relative
-sweep-to-sweep cost change is below `1e-2`. Every RG boundary is normalized by
-the coefficient infinity norm; fixed-point transfer measurements remain
-disabled until their eigensolver is available.
-
-Algorithm configurations are immutable values. Use Accessors directly to
-update nested properties:
-
-```julia
-using Accessors: @set, @reset
-candidate = @set tnr.max_rg_steps = 4
-@reset candidate.split.sweep.max_sweeps = 60
-@reset candidate.split.stopping.atol = 1e-10
-```
-
-The original `tnr` is unchanged. Each `@reset` separately rebinds `candidate`.
-A whole strategy can also be replaced, even when its concrete type changes:
-
-```julia
-@reset candidate.split.stopping = NoStopping()
-```
-
-In an interactive session the default observer uses one replaceable progress
-entry for the current RG split, spanning all of its split sweeps, and leaves
-concise sweep and RG summaries behind:
-
-```text
-[ Info: LoopTNR started · RG 0/2 normalization pending
-[ Info: LoopTNR RG 0/2 initialized · scale <Real>
-[ Info: LoopTNR RG 1/2 · split sweep 1 completed · cost <Float64> · duration <Float64> s
-[ Info: LoopTNR RG 1/2 completed · cost <Float64> · split <Float64> s · coarse grain <Float64> s · scale <Real>
-...
-[ Info: LoopTNR completed · RG 2/2 · 3 measurements
-```
-
-Typing a run at the REPL shows its next safe action without expanding tensor
-storage. During an active split it has this shape:
-
-```text
-LoopTNRRun(RG 1/2 · split sweep 3 · next site 5/8)
-  committed cell: 2×2 PlaquetteGates(ComplexF64, ComplexSpace)
-  RG logs: 1
-  measurements: 1
-  active split: 20/320 site updates
-```
-
-LoopTNR uses the same controllable execution interface as a standalone split:
-
-```julia
-run = initialize_run(gates, tnr)
-session_ref = Ref{LocalRunSession}()
-pause_requested = Ref(false)
-observer = event -> begin
-    if !pause_requested[] &&
-            event isa LoopTNRSplitStepCompleted &&
-            event.event.log.state.site == 4
-        pause_requested[] = true
-        pause!(session_ref[])
-    end
-    nothing
-end
-
-session = LocalRunSession(run; observer)
-session_ref[] = session
-start_run!(session)
-
-wait(session)  # stops after the current split site or complete RG action
-run_status(session) == ExecutionLab.LOCAL_PAUSED || error("run did not pause")
-display(run)   # reports the exact continuation point
-resume!(session)
-result = fetch(session)
-```
-
-Here the observer requests the pause once, after split site 4 completes. This
-avoids racing an external `pause!` call against a short run. An external pause
-request is still valid, but completion wins if the run finishes first.
-
-A custom observer replaces the display and receives both nested split-site
-events and committed RG events. Physical measurement results are carried by
-the RG event, separately from the control-only logs:
-
-```julia
-observer = event -> begin
-    event isa LoopTNRCoarseGrained || return
-    measurement = event.result
-    println("RG $(event.rg): normalization scale = ",
-            measurement.normalization.scale)
-end
-
-result = renormalize(gates, tnr; observer)
-```
-
-Durable pause stores the committed outer cell, its measurement history, and an
-active split snapshot when the pause lands inside a split. Restoring a LoopTNR
-checkpoint therefore needs the algorithm configuration, but not the original
-input cell:
-
-```julia
-session = start_run(initialize_run(gates, tnr))
-outcome = pause_and_checkpoint!(session, "paused-looptnr.jld2")
-
-if outcome == ExecutionLab.LOCAL_CHECKPOINT_WRITTEN
-    saved = read_checkpoint("paused-looptnr.jld2")
-    restored = restore_run(saved, tnr)
-    result = fetch(start_run(restored))
-else
-    result = fetch(session)
-end
-```
-
-
-## Tests
-
-```sh
-julia --project=. -e 'using Pkg; Pkg.test()'
-```
-
-The suite covers cell geometry, normalization, nested optimization, observer
-progress, snapshots, and durable checkpoints. ExecutionLab, PMPSLab, MPSSplitLab, and
-LoopTNRLab versions are checked when reading a LoopTNR checkpoint. Legacy
-PMPSLab checkpoint formats require their original environment and are not
-migrated. PMPSLab and LoopTNRLab remain `0.1.0`; ExecutionLab starts at `0.1.0`.
-
-## Scope and status
-
-The first resumable LoopTNR implementation is complete. Built-in fixed-point
-measurements and conformal spectra remain future work. The
-[implementation plan](design/looptnr-implementation-plan.md) records the existing
-algorithm; the [acceleration research plan](design/looptnr-als-acceleration-research-plan.md)
-records deferred experiments.
-
-## Provenance and credits
-
-Extracted from PMPSLab commit `dbd1fb7` on 2026-11-02. Numerical kernels and
-space conventions were moved without changing the algorithm. The original
-history remains in the sibling MPSSplitLab repository (formerly PMPSLab).
-
-LoopTNRLab builds on TensorKit, MPSKit through PMPSLab, and the algorithms and
-earlier implementation work in [TNRKit](https://github.com/QuantumKitHub/TNRKit.jl).
-TNRKit is not a runtime dependency. Credit belongs to the authors and
-contributors of those projects as described in MPSSplitLab's upstream acknowledgments.
-
-Checkpoints written before the PMPSLab/MPSSplitLab rename require their original
-package environment; serialized module paths are not automatically migrated.
-Current LoopTNR snapshots record LoopTNRLab, MPSSplitLab, and PMPSLab versions.
-
-## Tree-shaped configuration construction
-
-See [the standalone configuration example](examples/01_configuration_tree.jl).
-It constructs existing configuration types from graphical or indented trees;
-it does not define new types or run numerical work. The owning package supplies
-package-owned default metadata and serialization support for supported
-configuration interchange. JSON file I/O is provided by ExperimentLab.
+Examples are independent files with top-level REPL variables. Tests cover tensor
+spaces, numerical composition, pause/cancel, ALS and NNR restart at every yielded
+boundary, JSON-only progress reading, measurement ownership and fresh-process
+restoration. Historical design notes describe earlier implementations.

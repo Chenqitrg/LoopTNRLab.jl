@@ -8,14 +8,14 @@ end
 
 @testset "LoopTNR configuration" begin
     custom_split = rg0_split()
-    measurement = TNRMeasurement()
+    normalization = InfinityNormNormalization()
     algorithm = LoopTNR(;
-        split=custom_split, max_rg_steps=0, measurement
+        split=custom_split, max_rg_steps=0, normalization
     )
 
     @test algorithm.split === custom_split
     @test algorithm.max_rg_steps == 0
-    @test algorithm.measurement === measurement
+    @test algorithm.normalization === normalization
     @test algorithm == deepcopy(algorithm)
     @test hash(algorithm) == hash(deepcopy(algorithm))
     @test algorithm.split.initialization isa SVDInitialization
@@ -32,6 +32,8 @@ end
         TensorKit.truncrank(dcut) & numerical_truncation
 
     @test algorithm.max_rg_steps == 3
+    @test algorithm.filtering isa ProjectorGaugeFix
+    @test algorithm.filtering.trunc == numerical_truncation
     @test algorithm.split.initialization isa GaugeInitialization
     @test algorithm.split.initialization.initialization.trunc == expected_svd
     @test algorithm.split.initialization.gauge_fix.tol == 1.0e-13
@@ -46,8 +48,7 @@ end
         rtol=1.0e-2,
         min_sweeps=5,
     )
-    @test algorithm.measurement.normalization isa InfinityNormNormalization
-    @test algorithm.measurement.fixed_point isa NoFixedPointMeasurement
+    @test algorithm.normalization isa InfinityNormNormalization
     @test_throws ArgumentError default_looptnr(; dcut=0, max_rg_steps=1)
     @test_throws ArgumentError default_looptnr(; dcut=2, max_rg_steps=-1)
 end

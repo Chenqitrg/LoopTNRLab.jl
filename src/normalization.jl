@@ -1,29 +1,3 @@
-"""
-    AbstractNormalization <: AbstractAlgorithmConfig
-
-Configuration for an in-place tensor-network normalization.
-"""
-abstract type AbstractNormalization <: AbstractAlgorithmConfig end
-
-"""
-    InfinityNormNormalization <: AbstractNormalization
-
-Normalize the independently stored gates of a tensor cell by the geometric
-mean of their coefficient infinity norms.
-"""
-@option struct InfinityNormNormalization <: AbstractNormalization end
-
-"""
-    NormalizationResult(scale, log_scale)
-
-Scientific result of a normalization. `scale` is the factor divided out of
-each independently stored gate and `log_scale` is its natural logarithm.
-"""
-struct NormalizationResult{T<:Real} <: AbstractMeasurementResult
-    scale::T
-    log_scale::T
-end
-
 _stored_gates(cell::UniformGates) = (cell.gate,)
 _stored_gates(cell::CheckerboardGates) = (cell.black, cell.white)
 _stored_gates(cell::PlaquetteGates) = (
@@ -80,9 +54,10 @@ end
 """
     normalize!(cell::AbstractTensorCell, normalization::InfinityNormNormalization)
 
-Normalize `cell` in place and return a [`NormalizationResult`](@ref). Aliased
-gate fields are included and scaled exactly once. All norms and scale factors
-are validated before any gate is modified.
+Normalize `cell` in place and return `(; scale, log_scale)`. `scale` is the
+factor divided out of each independent gate; `log_scale` is its natural
+logarithm. Aliased gate fields are included and scaled exactly once. All norms
+and scale factors are validated before any gate is modified.
 """
 function LinearAlgebra.normalize!(
         cell::AbstractTensorCell,
@@ -91,5 +66,5 @@ function LinearAlgebra.normalize!(
     gates = _independent_gates(cell)
     scale, log_scale, inverse_scale = _normalization_scale(gates)
     foreach(gate -> rmul!(gate, inverse_scale), gates)
-    return NormalizationResult(scale, log_scale)
+    return (; scale, log_scale)
 end

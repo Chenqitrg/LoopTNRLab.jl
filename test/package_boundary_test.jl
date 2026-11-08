@@ -1,15 +1,17 @@
-@testset "LoopTNRLab owns lattice renormalization" begin
+@testset "Domain state stays in LoopTNR; infrastructure stays upstream" begin
     @test parentmodule(LoopTNR) === LoopTNRLab
     @test parentmodule(PlaquetteGates) === LoopTNRLab
-    @test parentmodule(MeasurementHistory) === LoopTNRLab
+    @test parentmodule(ExperimentLab.Session) === ExperimentLab
+    for name in (:LoopTNRPhase, :LoopTNRRun, :LoopTNRResult, :LoopTNRLog,
+                 :RGLog, :TNRMeasurement, :NoFixedPointMeasurement, :step!, :isfinished)
+        @test !isdefined(LoopTNRLab, name)
+    end
+    @test !Base.isexported(LoopTNRLab, :AbstractMeasurement)
     @test !isdefined(MPSSplitLab, :SplitRun)
     @test !isdefined(PMPSLab, :LoopTNR)
-    @test !isdefined(PMPSLab, :MeasurementHistory)
-end
-
-@testset "shared execution interfaces" begin
-    @test parentmodule(AbstractAlgorithmRun) === ExecutionLab
-    @test LoopTNRLab.initialize_run === ExecutionLab.initialize_run
-    @test LoopTNRLab.snapshot === ExecutionLab.snapshot
-    @test MPSSplitLab.step! !== ExecutionLab.step!
+    loaded = Set(pkg.name for pkg in keys(Base.loaded_modules))
+    @test !("GaugeFixingLab" in loaded)
+    @test !("TransferEnvironmentsLab" in loaded)
+    @test !("ExecutionLab" in loaded)
+    @test !("AlgorithmDataLab" in loaded)
 end

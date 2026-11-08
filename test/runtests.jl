@@ -1,24 +1,21 @@
-using UpdateLab
-using UpdateLab: SweepState, Forward, Backward
-using PeriodicProductsLab
-using TensorLinearSolveLab
-using Test, LoopTNRLab, PMPSLab, MPSSplitLab, ExecutionLab, ExperimentLab
-using MPSSplitLab: SplitLog, SiteLog, split_progress
-using ExecutionLab: AbstractAlgorithmRun, AlgorithmEvent, LocalRunSession, start_run!
-using ExecutionLab: initialize_run, step!, isfinished, run_result, snapshot, write_checkpoint
-using GaugeFixingLab, TransferEnvironmentsLab, PeriodicProductsLab
-using TensorKit
+using Test, LoopTNRLab, PMPSLab, MPSSplitLab, ExperimentLab
+using UpdateLab, TensorLinearSolveLab, PMPSLab
+using TensorKit, LinearAlgebra, Logging
+using Accessors: @set
 
+include("fixtures.jl")
 @testset "cross-package method ambiguities" begin
-    @test isempty(detect_ambiguities(LoopTNRLab, PMPSLab, MPSSplitLab, ExecutionLab; recursive=true))
+    @test isempty(detect_ambiguities(LoopTNRLab, PMPSLab, MPSSplitLab, ExperimentLab; recursive=true))
 end
 include("package_boundary_test.jl")
 include("accessors_test.jl")
 include("config_display_test.jl")
-include("measurement_test.jl")
-include("tensorcell_test.jl")
-include("looptnr/runtests.jl")
-include("checkpoint_test.jl")
-include("fresh_process_checkpoint_test.jl")
-
 include("configuration_test.jl")
+include("tensorcell_test.jl")
+include("cdl_test.jl")
+with_logger(NullLogger()) do
+    include("looptnr/runtests.jl")
+    include("split_interface_test.jl")
+    include("filtering_test.jl")
+end
+include("storage_test.jl")

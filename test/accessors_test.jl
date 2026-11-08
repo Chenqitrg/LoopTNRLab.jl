@@ -11,7 +11,7 @@ using Accessors: @set, @reset
     @test modified.split.sweep.max_sweeps == 60
     @test modified.split.stopping.atol == 1e-10
     @test modified.split.stopping.rtol == algorithm.split.stopping.rtol
-    @test modified.measurement === algorithm.measurement
+    @test modified.normalization === algorithm.normalization
 
     replacement_trunc = algorithm.split.initialization.gauge_fix.trunc
     retruncated = (@set algorithm.split.initialization.initialization.trunc = replacement_trunc)

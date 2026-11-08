@@ -1,7 +1,7 @@
 # Loop-TNR ALS 收敛加速与并行化研究计划
 
 > Package extraction (2026-11-02): this design now belongs to LoopTNRLab.
-> Periodic-MPS optimization belongs to MPSSplitLab; generic execution belongs to ExecutionLab.
+> Periodic-MPS optimization belongs to MPSSplitLab; generic execution belongs to ExperimentLab.
 > Historical implementation details below describe the pre-extraction baseline.
 
 ## 状态与范围

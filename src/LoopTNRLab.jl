@@ -1,57 +1,29 @@
 module LoopTNRLab
 
-using Configurations: @option
-
-using ExecutionLab
-using ExecutionLab: LocalRunSession
-using ExecutionLab: AbstractAlgorithmRun, AbstractAlgorithmSnapshot, AlgorithmEvent
-using PMPSLab
-using MPSSplitLab
-using UpdateLab: CircularSweep, sweep_states, completes_sweep
-using TensorLinearSolveLab: LDLTSolve
-using MPSSplitLab: SplitLog, split_progress
-using ExperimentLab: AbstractAlgorithmConfig
-using GaugeFixingLab: ProjectorGaugeFix
-using TransferEnvironmentsLab: DenseTransferPolicy
-using TensorKit
-using LinearAlgebra
-using Logging: @error, @info, @logmsg
-using UUIDs: UUID, uuid4
-import Random
-import ProgressLogging
-import TensorKit: scalartype
+using TensorKit, LinearAlgebra
+using ResumableFunctions: ResumableFunctions, @resumable, @yield, @yieldfrom, @nosave
+import Configurations, ExperimentLab, MPSSplitLab, PMPSLab, Random
+import TensorLinearSolveLab, UpdateLab
 import PMPSLab: PeriodicMPS, assertconsistency, standardize
-import ExecutionLab: initialize_run, step!, isfinished, run_result, snapshot, restore_run
-import ExecutionLab: DEFAULT_OBSERVER, default_observer, resolve_observer
-import ExecutionLab: observer_running!, observer_paused!, observer_cancelled!
-import ExecutionLab: observer_completed!, observer_failed!, observer_step!
-import ExecutionLab: checkpoint_algorithm, checkpoint_metadata
 
 export AbstractTensorCell, UniformGates, CheckerboardGates, PlaquetteGates
 export mul_west, mul_south, mul_north, mul_east
-export AbstractMeasurement, AbstractMeasurementResult, MeasurementHistory, measure
-export AbstractNormalization, InfinityNormNormalization, NormalizationResult
-export AbstractFixedPointMeasurement, NoFixedPointMeasurement
-export TNRMeasurement, TNRMeasurementResult
-export LoopTNR, LoopTNRRun, LoopTNRSnapshot, LoopTNRPhase, LoopTNRResult
-export RGLog, LoopTNRLog, LoopTNRCoarseGrained
-export LoopTNRSplitStepCompleted, default_looptnr, renormalize
+export cdl_tensor, random_cdl_tensor
+export LoopTNR, default_looptnr, renormalize, InfinityNormNormalization
+public AbstractNormalization, RGProgress, FilteringProgress
+public filter_entanglement
+public LoopTNRState, TNRSnapshot, initialize_tnr, tnr_steps, restore_tnr
 
-include("measurement/interface.jl")
-include("measurement/history.jl")
 include("tensorcell/container.jl")
 include("tensorcell/constructors.jl")
+include("tensorcell/cdl.jl")
 include("tensorcell/show.jl")
-include("periodic_mps.jl")
-include("looptnr/normalization.jl")
-include("looptnr/measurement.jl")
-include("looptnr/interface.jl")
-include("looptnr/logs.jl")
-include("looptnr/coarse_grain.jl")
-include("looptnr/run.jl")
-include("looptnr/snapshot.jl")
-include("looptnr/show.jl")
-include("looptnr/progress.jl")
-include("checkpoint.jl")
+include("algorithm.jl")
+include("normalization.jl")
+include("contractions.jl")
+include("filtering.jl")
+include("state.jl")
+include("iteration.jl")
+include("snapshot.jl")
 
 end

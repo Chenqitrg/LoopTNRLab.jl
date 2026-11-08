@@ -42,7 +42,7 @@ independent_gate_norms(cell::PlaquetteGates) = [
         identities_before = objectid.(gates_before)
         result = normalize!(cell, normalization)
 
-        @test result isa NormalizationResult
+        @test keys(result) == (:scale, :log_scale)
         @test result.scale ≈ expected_scale
         @test result.log_scale ≈ log(expected_scale)
         @test objectid.(collect(cell)) == identities_before

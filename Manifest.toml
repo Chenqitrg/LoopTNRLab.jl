@@ -2,7 +2,7 @@
 
 julia_version = "1.12.5"
 manifest_format = "2.0"
-project_hash = "40d30c4e2599a449b99eee2a7fa6377c56baf210"
+project_hash = "f81917ec45b01d788fd0f42c471c90a68cd5631b"
 
 [[deps.Accessors]]
 deps = ["CompositionsBase", "ConstructionBase", "Dates", "InverseFunctions", "MacroTools"]
@@ -41,12 +41,6 @@ version = "4.7.0"
     [deps.Adapt.weakdeps]
     SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
     StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-
-[[deps.AlgorithmDataLab]]
-deps = ["Dates", "ExperimentLab", "JSON", "Serialization", "UUIDs"]
-path = "../AlgorithmDataLab"
-uuid = "30e23d37-15d8-4d62-b06b-253c1d507eac"
-version = "0.1.0"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -123,9 +117,9 @@ version = "0.3.15"
     GPUArrays = "0c68f7d7-f131-5f86-a1c3-88cf8149b2d7"
 
 [[deps.ChunkCodecCore]]
-git-tree-sha1 = "1a3ad7e16a321667698a19e77362b35a1e94c544"
+git-tree-sha1 = "3496e2b359c27793d12bec54ec94be7983a6ceb2"
 uuid = "0b6fb165-00bc-4d37-ab8b-79f91016dbe1"
-version = "1.0.1"
+version = "1.0.2"
 
 [[deps.ChunkCodecLibZlib]]
 deps = ["ChunkCodecCore", "Zlib_jll"]
@@ -210,14 +204,8 @@ deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 version = "1.7.0"
 
-[[deps.ExecutionLab]]
-deps = ["JLD2"]
-path = "../ExecutionLab"
-uuid = "4dd3bba2-2046-4a6b-95c2-394d9ad1e82c"
-version = "0.1.0"
-
 [[deps.ExperimentLab]]
-deps = ["Configurations", "Dates", "JSON", "Logging", "LoggingExtras", "LoggingFormats", "Serialization", "UUIDs"]
+deps = ["Configurations", "Dates", "JLD2", "JSON", "Logging", "LoggingExtras", "LoggingFormats", "ResumableFunctions", "UUIDs"]
 path = "../ExperimentLab"
 uuid = "29f77e63-5c80-4c5a-8fc3-cbf639322b6d"
 version = "0.1.0"
@@ -270,12 +258,6 @@ version = "1.17.0"
     StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
     Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
-[[deps.GaugeFixingLab]]
-deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "MPSKit", "PMPSLab", "TensorKit"]
-path = "../GaugeFixingLab"
-uuid = "aa667719-725a-491d-a593-e8aee8158101"
-version = "0.1.0"
-
 [[deps.HalfIntegers]]
 git-tree-sha1 = "9c3149243abb5bc0bad0431d6c4fcac0f4443c7c"
 uuid = "f0d1745a-41c9-11e9-1dd9-e5d34d218721"
@@ -315,10 +297,10 @@ version = "0.1.17"
     Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[deps.JLD2]]
-deps = ["ChunkCodecLibZlib", "ChunkCodecLibZstd", "FileIO", "MacroTools", "Mmap", "OrderedCollections", "PrecompileTools", "ScopedValues"]
-git-tree-sha1 = "9ebadf3f8f0de07031359917549bbdadc23f5dc3"
+deps = ["ChunkCodecCore", "ChunkCodecLibZlib", "ChunkCodecLibZstd", "FileIO", "MacroTools", "Mmap", "OrderedCollections", "PrecompileTools", "ScopedValues"]
+git-tree-sha1 = "9ce2e7c49ae4a7035b7d60db3a553b1f6c16875d"
 uuid = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
-version = "0.6.5"
+version = "0.6.7"
 
     [deps.JLD2.extensions]
     UnPackExt = "UnPack"
@@ -423,7 +405,7 @@ uuid = "98105f81-4425-4516-93fd-1664fb551ab6"
 version = "1.6.0"
 
 [[deps.LoopTNRLab]]
-deps = ["AlgorithmDataLab", "Configurations", "ExecutionLab", "ExperimentLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "UUIDs", "UpdateLab"]
+deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "Logging", "MPSSplitLab", "PMPSLab", "Random", "ResumableFunctions", "TensorKit", "TensorLinearSolveLab", "UpdateLab"]
 path = "."
 uuid = "79a27a1c-33d3-4c94-be41-5c25c0a0db11"
 version = "0.1.0"
@@ -439,14 +421,10 @@ weakdeps = ["Adapt"]
     MPSKitAdaptExt = "Adapt"
 
 [[deps.MPSSplitLab]]
-deps = ["Configurations", "ExperimentLab", "GaugeFixingLab", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "ProgressLogging", "Random", "TensorKit", "TensorLinearSolveLab", "TransferEnvironmentsLab", "TransferMatricesLab", "UUIDs", "UpdateLab"]
+deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "Logging", "MPSKit", "PMPSLab", "PeriodicProductsLab", "Random", "ResumableFunctions", "TensorKit", "TensorLinearSolveLab", "TransferMatricesLab", "UpdateLab"]
 path = "../MPSSplitLab"
 uuid = "dd4302de-b7e4-496a-84b6-645ce13c7f0e"
 version = "0.1.0"
-weakdeps = ["ExecutionLab"]
-
-    [deps.MPSSplitLab.extensions]
-    MPSSplitExecutionExt = "ExecutionLab"
 
 [[deps.MacroTools]]
 git-tree-sha1 = "1e0228a030642014fe5cfe68c2c0a818f9e3f522"
@@ -530,7 +508,7 @@ uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 version = "1.8.2"
 
 [[deps.PMPSLab]]
-deps = ["MPSKit", "Random", "TensorKit"]
+deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "MPSKit", "PeriodicProductsLab", "Random", "TensorKit", "TransferMatricesLab"]
 path = "../PMPSLab"
 uuid = "671cd7e2-a4a1-40fd-ad7d-501014e12597"
 version = "0.1.0"
@@ -587,12 +565,6 @@ deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 version = "1.11.0"
 
-[[deps.ProgressLogging]]
-deps = ["Logging", "SHA", "UUIDs"]
-git-tree-sha1 = "f0803bc1171e455a04124affa9c21bba5ac4db32"
-uuid = "33c8b6b6-d38a-422a-b730-caa89a2f386c"
-version = "0.1.6"
-
 [[deps.PtrArrays]]
 git-tree-sha1 = "4fbbafbc6251b883f4d2705356f3641f3652a7fe"
 uuid = "43287f4e-b6f4-7ad1-bb20-aadabca52c3d"
@@ -619,6 +591,12 @@ deps = ["UUIDs"]
 git-tree-sha1 = "62389eeff14780bfe55195b7204c0d8738436d64"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "1.3.1"
+
+[[deps.ResumableFunctions]]
+deps = ["Logging", "MacroTools"]
+git-tree-sha1 = "425f9d353d88d19343f1e509052282f000a985a8"
+uuid = "c5292f4c-5179-55e1-98c5-05642aab7184"
+version = "1.0.8"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
@@ -817,12 +795,6 @@ version = "0.5.29"
 
     [deps.TimerOutputs.weakdeps]
     FlameGraphs = "08572546-2f56-4bcf-ba4e-bab62c3a3f89"
-
-[[deps.TransferEnvironmentsLab]]
-deps = ["Configurations", "ExperimentLab", "LinearAlgebra", "MPSKit", "PMPSLab", "PeriodicProductsLab", "TensorKit", "TransferMatricesLab"]
-path = "../TransferEnvironmentsLab"
-uuid = "00da41fc-476d-4222-bd5b-a569ec08fa45"
-version = "0.1.0"
 
 [[deps.TransferMatricesLab]]
 deps = ["LinearAlgebra", "MPSKit", "MatrixAlgebraKit", "TensorKit"]
