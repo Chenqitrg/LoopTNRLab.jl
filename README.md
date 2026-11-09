@@ -155,3 +155,19 @@ Examples are independent files with top-level REPL variables. Tests cover tensor
 spaces, numerical composition, pause/cancel, ALS and NNR restart at every yielded
 boundary, JSON-only progress reading, measurement ownership and fresh-process
 restoration. Historical design notes describe earlier implementations.
+
+## Acknowledgements
+
+We are grateful to the authors and contributors of
+[TNRKit.jl](https://github.com/QuantumKitHub/TNRKit.jl), whose LoopTNR implementation
+and discussions have been a valuable reference for this work.
+
+The idea of separating algorithm configuration from the iterator that drives
+execution comes from Zhengyuan Yue's [TRG implementation](https://github.com/Yue-Zhengyuan/TNRKit.jl/blob/9cc5088bcca55ff9c5a72403764acfe8e9ceeb21/src/schemes/trg.jl)
+and its [Renormalizer iterator](https://github.com/Yue-Zhengyuan/TNRKit.jl/blob/9cc5088bcca55ff9c5a72403764acfe8e9ceeb21/src/schemes/renormalizer.jl)
+in his TNRKit fork. We are grateful to him for sharing this design and for the
+helpful discussions that informed this work.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
