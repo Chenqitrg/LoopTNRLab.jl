@@ -1,5 +1,5 @@
 # Run from LoopTNRLab: julia --project=. examples/02_run_and_pause.jl
-using LoopTNRLab, PMPSLab, TensorKit
+using TensorLatticeLab, LoopTNRLab, PMPSLab, TensorKit
 import ExperimentLab, LatticeIteratorLab, TensorLinearSolveLab
 
 cell = UniformGates(ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1))

@@ -1,6 +1,6 @@
 # Run from LoopTNRLab: julia --project=. examples/05_entanglement_filtering.jl
 using PMPSLab: SVDInitialization
-using LoopTNRLab, PMPSLab, TensorKit
+using TensorLatticeLab, LoopTNRLab, PMPSLab, TensorKit
 using ExperimentLab, Test
 import LatticeIteratorLab, TensorLinearSolveLab
 

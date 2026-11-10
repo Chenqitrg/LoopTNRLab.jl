@@ -11,7 +11,7 @@ using PMPSLab: SVDInitialization
     @test coarse isa CheckerboardGates
     @test TensorKit.scalartype(coarse.black) == ComplexF64
     @test TensorKit.scalartype(coarse.white) == ComplexF64
-    @test isnothing(assertconsistency(coarse))
+    @test isnothing(TensorLatticeLab.assertconsistency(coarse))
     @test all(collect(optimized) .== tensors_before)
 end
 

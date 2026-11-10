@@ -8,7 +8,7 @@ continue RG. It does not keep execution status, log histories or measurement his
 ## Run a calculation
 
 ```julia
-using LoopTNRLab, PMPSLab, LatticeIteratorLab, TensorLinearSolveLab, TensorKit
+using TensorLatticeLab, LoopTNRLab, PMPSLab, LatticeIteratorLab, TensorLinearSolveLab, TensorKit
 
 cell = UniformGates(ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1))
 algorithm = LoopTNR(max_rg_steps=1,
@@ -137,7 +137,11 @@ are not replayed, including a snapshot taken after the final split site.
 6. [state.jl](src/state.jl) and [snapshot.jl](src/snapshot.jl): numerical commit and restart data.
 7. [contractions.jl](src/contractions.jl): tensor layout and coarse graining.
 
-`tensorcell/` contains the lattice containers, constructors and displays;
+Tensor-cell types, constructors, local leg operations and displays belong to
+the sibling `TensorLatticeLab` package. Import its API explicitly with
+`using TensorLatticeLab`; LoopTNRLab does not re-export these names.
+Cell checks use `TensorLatticeLab.assertconsistency` and
+`TensorLatticeLab.standardize`, while PMPSLab owns the MPS versions.
 `algorithm.jl` defines settings and their JSON names; `normalization.jl` implements
 normalization. Scientific tensor kernels and their space checks remain explicit.
 

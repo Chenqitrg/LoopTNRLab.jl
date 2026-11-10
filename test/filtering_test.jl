@@ -33,7 +33,7 @@ end
         @test cdl_partition(original) ≈ tr(convert(Array, corner)^4)^4
         @test filtered.relative_error < 1e-7 # Overlap subtraction roundoff.
         @test all(a == b for (a,b) in zip(original,before))
-        @test assertconsistency(filtered.cell) === nothing
+        @test TensorLatticeLab.assertconsistency(filtered.cell) === nothing
     end
 
     # Equal dominant eigenvalues are not artificially forced to rank one.

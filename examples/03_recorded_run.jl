@@ -1,5 +1,5 @@
 # Run from LoopTNRLab: julia --project=. examples/03_recorded_run.jl
-using LoopTNRLab, PMPSLab, TensorKit, LinearAlgebra
+using TensorLatticeLab, LoopTNRLab, PMPSLab, TensorKit, LinearAlgebra
 using ExperimentLab, Configurations
 import LatticeIteratorLab, TensorLinearSolveLab
 

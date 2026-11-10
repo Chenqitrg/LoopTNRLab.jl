@@ -2,23 +2,19 @@ module LoopTNRLab
 
 using TensorKit, LinearAlgebra
 using ResumableFunctions: ResumableFunctions, @resumable, @yield, @yieldfrom, @nosave
-import Configurations, ExperimentLab, PMPSLab, Random
+import Configurations, ExperimentLab, PMPSLab
 import ExperimentLab: algorithm_steps
 import TensorLinearSolveLab, LatticeIteratorLab
-import PMPSLab: PeriodicMPS, assertconsistency, standardize
+import PMPSLab: PeriodicMPS
+import TensorLatticeLab
+using TensorLatticeLab: AbstractTensorCell, UniformGates, CheckerboardGates, PlaquetteGates
+using TensorLatticeLab: GenericGateTensor, assertconsistency
 
-export AbstractTensorCell, UniformGates, CheckerboardGates, PlaquetteGates
-export mul_west, mul_south, mul_north, mul_east
-export cdl_tensor, random_cdl_tensor
 export LoopTNR, default_looptnr, renormalize, InfinityNormNormalization
 public AbstractNormalization, RGProgress, FilteringProgress
 public filter_entanglement
 public LoopTNRState, TNRSnapshot, initialize_tnr, restore_tnr
 
-include("tensorcell/container.jl")
-include("tensorcell/constructors.jl")
-include("tensorcell/cdl.jl")
-include("tensorcell/show.jl")
 include("algorithm.jl")
 include("normalization.jl")
 include("contractions.jl")

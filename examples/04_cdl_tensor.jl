@@ -1,5 +1,5 @@
 # Run from LoopTNRLab: julia --project=. examples/04_cdl_tensor.jl
-using LoopTNRLab, PMPSLab, TensorKit, Random
+using TensorLatticeLab, LoopTNRLab, PMPSLab, TensorKit, Random
 using Test: @test
 
 # 1. Choose the corner weights explicitly. No random initialization is involved.
@@ -14,7 +14,7 @@ display(cell)
 target = PeriodicMPS(cell)
 @show length(target)
 @test length(target) == 4
-@test assertconsistency(target) === nothing
+@test PMPSLab.assertconsistency(target) === nothing
 
 # 3. Four distinct corners are accepted in clockwise order: NW, NE, SE, SW.
 anisotropic = cdl_tensor(corner, 2corner, 3corner, 4corner)

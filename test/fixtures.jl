@@ -14,3 +14,7 @@ function finish_tnr(state)
         onstep=(_, event) -> push!(events, signature(event, state))))
     return result, events
 end
+
+function test_gate(; west=ℂ^2, south=ℂ^3, north=south, east=west)
+    return randn(ComplexF64, west ⊗ south, north ⊗ east)
+end
