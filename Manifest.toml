@@ -116,6 +116,12 @@ version = "0.3.15"
     Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
     GPUArrays = "0c68f7d7-f131-5f86-a1c3-88cf8149b2d7"
 
+[[deps.BoundaryBulkKit]]
+deps = ["Dictionaries", "Strided", "TensorKit", "TensorKitSectors"]
+path = "../BoundaryBulkKit-center-protocol"
+uuid = "13c682a8-1356-4ba9-a9ff-98b003f00f25"
+version = "0.1.0"
+
 [[deps.ChunkCodecCore]]
 git-tree-sha1 = "3496e2b359c27793d12bec54ec94be7983a6ceb2"
 uuid = "0b6fb165-00bc-4d37-ab8b-79f91016dbe1"
@@ -754,12 +760,12 @@ version = "0.8.1"
 
 [[deps.TensorKitSectors]]
 deps = ["HalfIntegers", "LinearAlgebra", "TensorOperations", "WignerSymbols"]
-git-tree-sha1 = "9f536263310aae90df175337d586a1655104aae3"
+git-tree-sha1 = "6ce39505587f6a56acd86e521af3749b16e277ed"
 uuid = "13a9c161-d5da-41f0-bcbd-e1a08ae0647f"
-version = "0.3.9"
+version = "0.3.12"
 
 [[deps.TensorLatticeLab]]
-deps = ["Random", "TensorGraphLab", "TensorKit"]
+deps = ["BoundaryBulkKit", "Configurations", "ExperimentLab", "KrylovKit", "Random", "TensorGraphLab", "TensorKit"]
 path = "../TensorLatticeLab"
 uuid = "46c21c2e-420c-4bb4-a202-10c3eba0845a"
 version = "0.1.0"
