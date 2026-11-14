@@ -7,9 +7,20 @@ algorithm = LoopTNR(max_rg_steps=1,
     split=ALSSplit(sweep=LatticeIteratorLab.CircularSweep(max_sweeps=1),
         solver=TensorLinearSolveLab.CholeskySolve()))
 
-# The blocking entry point returns only the final cell and completed RG count.
-result = renormalize(cell, algorithm)
-@show result.completed_rg
+# Count site updates between committed RG boundaries, including RG 0.
+site_updates = Ref(0)
+updates_by_rg = Dict{Int,Int}()
+function record_progress(session, event)
+    if event isa PMPSLab.SplitProgress
+        site_updates[] += 1
+    elseif event isa LoopTNRLab.RGProgress
+        updates_by_rg[event.rg] = site_updates[]
+        site_updates[] = 0
+    end
+end
+coarse_cell = renormalize(cell, algorithm; onstep=record_progress)
+@assert updates_by_rg == Dict(0 => 0, 1 => 8)
+@assert coarse_cell isa PlaquetteGates
 
 # The same computation can pause after any nested split site. LoopTNR forwards
 # PMPSLab.SplitProgress unchanged; ExperimentLab controls the Session.
@@ -26,6 +37,6 @@ session = ExperimentLab.start_run(ExperimentLab.algorithm_steps(state); threaded
 
 # In the REPL, inspect the paused state before running these two lines.
 ExperimentLab.resume!(session)
-resumed_result = fetch(session)
-@assert resumed_result.completed_rg == 1
+@assert fetch(session) === state
+@assert state.completed_rg == 1
 nothing

@@ -8,7 +8,7 @@ using PMPSLab: SVDInitialization, NuclearNorm
         result, events = finish_tnr(state)
         @test events == [(:rg, 0, 0)]
         @test result.completed_rg == 0
-        @test result.cell === state.cell
+        @test result === state
         @test all(norm(t, Inf) ≈ 1 for t in state.cell)
         @test all(collect(cell) .== before)
         @test !hasproperty(state, :log) && !hasproperty(state, :measurement_results)
@@ -36,6 +36,17 @@ end
     @test all(collect(cell) .== before)
 end
 
+@testset "renormalize forwards progress and returns the final cell" begin
+    events = ExperimentLab.AbstractLogEvent[]
+    cell = scalar_cell()
+    algorithm = small_algorithm(steps=1)
+    result = renormalize(cell, algorithm; onstep=(_, event) -> push!(events, event))
+    @test [event.rg for event in events if event isa LoopTNRLab.RGProgress] == [0, 1]
+    @test [event.site for event in events if event isa PMPSLab.SplitProgress] == 1:8
+    @test result isa PlaquetteGates
+    @test all(a ≈ b for (a, b) in zip(result, renormalize(cell, algorithm)))
+end
+
 @testset "Direct child generator yields every site; Session controls pauses" begin
     for regularization in (PMPSLab.NoRegularization(), NuclearNorm())
         state = LoopTNRLab.initialize_tnr(scalar_cell(), small_algorithm(; regularization))
@@ -50,8 +61,8 @@ end
         @test state.active_split.progress.completed_updates == 4
         @test state.completed_rg == 0
         resume!(session)
-        result = fetch(session)
-        @test result.completed_rg == 2
+        @test fetch(session) === state
+        @test state.completed_rg == 2
         @test events == vcat([(:rg, 0, 0)],
             [(:site, 1, site) for site in 1:8], [(:rg, 1, 0)],
             [(:site, 2, site) for site in 1:8], [(:rg, 2, 0)])

@@ -13,10 +13,12 @@ using TensorLatticeLab, LoopTNRLab, PMPSLab, LatticeIteratorLab, TensorLinearSol
 cell = UniformGates(ones(ComplexF64, ℂ^1 ⊗ ℂ^1, ℂ^1 ⊗ ℂ^1))
 algorithm = LoopTNR(max_rg_steps=1,
     split=ALSSplit(sweep=CircularSweep(max_sweeps=1), solver=CholeskySolve()))
-result = renormalize(cell, algorithm)
-result.cell
-result.completed_rg
+coarse_cell = renormalize(cell, algorithm)
 ```
+
+Pass `onstep=record_progress` to call `record_progress(session, event)` at each
+filtering, split, and RG progress event. The [run example](examples/02_run_and_pause.jl)
+uses the callback to count site updates per RG step.
 
 This scalar example demonstrates the workflow, not a physical model. The input is
 copied. RG 0 normalizes the initial cell; each later RG filters the current plaquette's inner loop, optimizes its split,
@@ -82,7 +84,7 @@ session = start_run(ExperimentLab.algorithm_steps(state); threaded=false,
         end
     end)
 # After the Session reports PAUSED, inspect state and then resume!(session).
-# fetch(session) waits for completion, including across pauses.
+# On completion, fetch(session) === state. Read state.cell and state.completed_rg.
 ```
 
 The generator directly delegates to `ExperimentLab.algorithm_steps` with `@yieldfrom`.

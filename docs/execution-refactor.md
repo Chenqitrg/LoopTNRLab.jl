@@ -40,7 +40,7 @@ snapshot does not require an ALS-specific snapshot type or field layout.
 ## Removed interfaces
 
 - LoopTNRRun, LoopTNRPhase and manual step!/isfinished/tnr_result dispatch.
-- LoopTNRResult: the result is now `(cell, completed_rg)`.
+- LoopTNRResult: `fetch(session)` returns the updated state. `renormalize` returns its final cell.
 - LoopTNRLog and RGLog: recorded execution logs retain the history.
 - TNRMeasurement and NoFixedPointMeasurement: use ExperimentLab measurements
   directly in the callback. Normalization is a direct LoopTNR configuration field.

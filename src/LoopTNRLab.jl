@@ -3,6 +3,7 @@ module LoopTNRLab
 using TensorKit, LinearAlgebra
 using ResumableFunctions: ResumableFunctions, @resumable, @yield, @yieldfrom, @nosave
 import Configurations, ExperimentLab, PMPSLab
+using ExperimentLab: AbstractLogEvent, EventRegistry, event_record, start_run
 import ExperimentLab: algorithm_steps
 import TensorLinearSolveLab, LatticeIteratorLab
 import PMPSLab: PeriodicMPS

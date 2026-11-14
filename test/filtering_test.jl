@@ -64,14 +64,14 @@ end
 
     # The same SVD initialization without lattice filtering leaves a CDL.
     control = renormalize(cell, cdl_filter_algorithm(filtering=false, sweeps=0, steps=1))
-    @test all(LoopTNRLab._cell_bond_dimensions(control.cell) .== 4)
+    @test all(LoopTNRLab._cell_bond_dimensions(control) .== 4)
     first_rg = renormalize(cell, cdl_filter_algorithm(sweeps=0, steps=1))
-    @test all(LoopTNRLab._cell_bond_dimensions(first_rg.cell) .== 2)
-    next_filter = LoopTNRLab.filter_entanglement(first_rg.cell, algorithm.filtering)
-    @test dense(PeriodicMPS(next_filter.cell)) ≈ dense(PeriodicMPS(first_rg.cell)) rtol=2e-12
-    @test physicalspaces(PeriodicMPS(next_filter.cell)) == physicalspaces(PeriodicMPS(first_rg.cell))
+    @test all(LoopTNRLab._cell_bond_dimensions(first_rg) .== 2)
+    next_filter = LoopTNRLab.filter_entanglement(first_rg, algorithm.filtering)
+    @test dense(PeriodicMPS(next_filter.cell)) ≈ dense(PeriodicMPS(first_rg)) rtol=2e-12
+    @test physicalspaces(PeriodicMPS(next_filter.cell)) == physicalspaces(PeriodicMPS(first_rg))
     filtered_svd = renormalize(cell, cdl_filter_algorithm(sweeps=0))
-    @test all(LoopTNRLab._cell_bond_dimensions(filtered_svd.cell) .== 1)
+    @test all(LoopTNRLab._cell_bond_dimensions(filtered_svd) .== 1)
 
     # Filtering is committed with its prepared split. Restoring any safe boundary
     # must neither apply it twice nor replay its event or a completed site.

@@ -14,7 +14,7 @@ initialize_tnr(cell::AbstractTensorCell, algorithm::LoopTNR) =
 
 # Commit only after normalization succeeds. A failed contraction/normalization
 # leaves the previous cell and completed split available for inspection/restart.
-function _commit_rg!(state::LoopTNRState, candidate::PlaquetteGates, rg::Int, started::Float64)
+function _normalize_and_commit_rg!(state::LoopTNRState, candidate::PlaquetteGates, rg::Int, started::Float64)
     result = normalize!(candidate, state.algorithm.normalization)
     state.cell = candidate
     state.completed_rg = rg
@@ -22,10 +22,10 @@ function _commit_rg!(state::LoopTNRState, candidate::PlaquetteGates, rg::Int, st
     return RGProgress(rg, result.scale, result.log_scale, time() - started)
 end
 
-function _finish_rg!(state::LoopTNRState, mps::PeriodicMPS)
+function _coarse_grain_and_normalize!(state::LoopTNRState, mps::PeriodicMPS)
     started = time()
     candidate = PlaquetteGates(_coarse_grain(mps))
-    return _commit_rg!(state, candidate, state.completed_rg + 1, started)
+    return _normalize_and_commit_rg!(state, candidate, state.completed_rg + 1, started)
 end
 
 function Base.show(io::IO, state::LoopTNRState)
@@ -37,21 +37,22 @@ end
 # A single transaction prepares the next split. At the filtering yield, the
 # filtered cell and active split already agree, so snapshots need no phase flag
 # and restore_tnr must not filter this cell a second time.
-function _begin_rg!(state::LoopTNRState)
+function _prepare_plaquette_split!(state::LoopTNRState)
+    cell = state.cell
+    filtering_event = nothing
     policy = state.algorithm.filtering
-    if isnothing(policy)
-        state.active_split = PMPSLab.initialize_split(
-            PeriodicMPS(state.cell; copy=false), state.algorithm.split)
-        return nothing
+    if !isnothing(policy)
+        started = time()
+        before = _cell_bond_dimensions(cell)
+        filtered = filter_entanglement(cell, policy)
+        cell = filtered.cell
+        filtering_event = FilteringProgress(state.completed_rg + 1, before,
+            _cell_bond_dimensions(cell), filtered.relative_error, time() - started)
     end
-    started = time()
-    before = _cell_bond_dimensions(state.cell)
-    filtered = filter_entanglement(state.cell, policy)
-    progress = FilteringProgress(state.completed_rg + 1, before,
-        _cell_bond_dimensions(filtered.cell), filtered.relative_error, time() - started)
-    split = PMPSLab.initialize_split(
-        PeriodicMPS(filtered.cell; copy=false), state.algorithm.split)
-    state.cell = filtered.cell
+
+    target = PeriodicMPS(cell; copy=false)
+    split = PMPSLab.initialize_split(target, state.algorithm.split)
+    state.cell = cell
     state.active_split = split
-    return progress
+    return filtering_event
 end
